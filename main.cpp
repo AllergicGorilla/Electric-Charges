@@ -28,7 +28,6 @@ int main() {
   Line force_line;
   force_line.setColor(sf::Color::Green);
   // Charge count text
-  int chargeCount_int = 0;
   sf::Text chargeCount("Charges: " + std::to_string(chargeCount_int),
                        courier_prime, 30);
   chargeCount.setPosition(10, 10);
@@ -121,7 +120,6 @@ int main() {
 	    std::cout << c.id << std::endl;
 	    charge_vector.push_back(std::make_shared<Charge>(c));
 	    // Edit Text
-	    chargeCount_int += 1;
 	    chargeCount.setString("Charges: " +
 	                          std::to_string(charge_vector.size()));
 	  }
