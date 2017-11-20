@@ -1,5 +1,6 @@
 #ifndef CHARGE_H
 #define CHARGE_H
+#include "utilities.hpp"
 #include <SFML/Graphics.hpp>
 class Charge : public sf::CircleShape
 {
@@ -21,19 +22,21 @@ class Charge : public sf::CircleShape
     }
     const uint32_t id;
 
-    const float getCharge();
+    float getCharge() const;
 
-    const float getMass();
+    float getMass() const;
 
-    const sf::Vector2f getVelocity();
+    sf::Vector2f getVelocity() const;
     void setVelocity(sf::Vector2f v);
     void incrementVelocity(sf::Vector2f dv);
+    Line velocityLine() const;
 
     void setIsCursorOn(bool ico);
-    const bool getIsCursorOn();
+    bool getIsCursorOn() const;
 
     void setForce(sf::Vector2f f);
-    const sf::Vector2f getForce();
+    sf::Vector2f getForce() const;
 };
-bool detectChargeChargeCollision(Charge c1, Charge c2, float dt);
+bool detectChargeChargeCollision(const Charge c1, const Charge c2,
+                                 const float dt);
 #endif

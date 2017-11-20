@@ -176,8 +176,10 @@ int main()
         for (auto s : charge_vector) {
             sf::Vector2f sPos = s->getPosition();
             s->setIsCursorOn(distance(sPos, mousePos) < s->getRadius());
-            s->getIsCursorOn() ? s->setFillColor(sf::Color::Red) :
-                                 s->setFillColor(sf::Color::White);
+            if (s->getIsCursorOn()) {
+                s->setFillColor(sf::Color::Red);
+            } else
+                s->setFillColor(sf::Color::White);
             for (auto r : charge_vector) {
                 if (detectChargeChargeCollision(*r, *s, dt.asSeconds())) {
                     std::cout << "COLLISION" << std::endl;
@@ -203,8 +205,13 @@ int main()
         // Drawing routine
         window.clear();
         // Draw charges
-        for (auto s : charge_vector)
+        for (auto s : charge_vector) {
             window.draw(*s);
+            if (s->getIsCursorOn()) {
+                window.draw(s->velocityLine().getVertexArray());
+            }
+        }
+
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             if (tool == force && forceCharge != nullptr) {
                 force_line.setVerticesPosition(forceCharge->getPosition(),

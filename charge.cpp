@@ -1,21 +1,28 @@
 #include "charge.hpp"
-#include "utilities.hpp"
+
 uint32_t Charge::global_id = 0;
 
-const float Charge::getCharge() { return charge; }
-const float Charge::getMass() { return mass; }
+float Charge::getCharge() const { return charge; }
+float Charge::getMass() const { return mass; }
 
-const sf::Vector2f Charge::getVelocity() { return velocity; }
+sf::Vector2f Charge::getVelocity() const { return velocity; }
 void Charge::setVelocity(sf::Vector2f v) { velocity = v; }
 void Charge::incrementVelocity(sf::Vector2f dv) { velocity += dv; }
+Line Charge::velocityLine() const
+{
+    Line line(this->getPosition(), this->getPosition() + this->getVelocity());
+    line.setColor(sf::Color::Red);
+    return line;
+}
 
 void Charge::setIsCursorOn(bool ico) { isCursorOn = ico; }
-const bool Charge::getIsCursorOn() { return isCursorOn; }
+bool Charge::getIsCursorOn() const { return isCursorOn; }
 
 void Charge::setForce(sf::Vector2f f) { force = f; }
-const sf::Vector2f Charge::getForce() { return force; }
+sf::Vector2f Charge::getForce() const { return force; }
 
-bool detectChargeChargeCollision(Charge c1, Charge c2, float dt)
+bool detectChargeChargeCollision(const Charge c1, const Charge c2,
+                                 const float dt)
 {
     float distSqrd = lengthSqrd(c1.getPosition() - c2.getPosition());
     float radiusSqrd =
