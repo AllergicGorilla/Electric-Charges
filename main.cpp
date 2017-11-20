@@ -28,11 +28,7 @@ int main() {
   Line force_line;
   force_line.setColor(sf::Color::Green);
   // Charge count text
-<<<<<<< HEAD
   sf::Text chargeCount("Charges: " + std::to_string(0),
-=======
-  sf::Text chargeCount("Charges: " + std::to_string(chargeCount_int),
->>>>>>> 5da89810f412c04f7d274646cef8be8e00079aba
                        courier_prime, 30);
   chargeCount.setPosition(window.mapPixelToCoords(sf::Vector2i(0,0)));
   //
