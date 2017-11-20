@@ -1,5 +1,0 @@
-TODO:
--Physics
--Particle highlighting, particle view/follow
--Fields
--Tools: force,create charge,orbit charge

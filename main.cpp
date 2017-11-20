@@ -28,10 +28,9 @@ int main() {
   Line force_line;
   force_line.setColor(sf::Color::Green);
   // Charge count text
-  int chargeCount_int = 0;
-  sf::Text chargeCount("Charges: " + std::to_string(chargeCount_int),
+  sf::Text chargeCount("Charges: " + std::to_string(0),
                        courier_prime, 30);
-  chargeCount.setPosition(10, 10);
+  chargeCount.setPosition(window.mapPixelToCoords(sf::Vector2i(0,0)));
   //
   sf::Clock clock;
   //
@@ -47,6 +46,7 @@ int main() {
   bool lockView = false;
   // Main loop
   while (window.isOpen()) {
+    chargeCount.setPosition(window.mapPixelToCoords(sf::Vector2i(0,0)));
     sf::Vector2f mousePos =
         window.mapPixelToCoords(sf::Mouse::getPosition(window));
     sf::Time dt = clock.restart();
@@ -121,7 +121,6 @@ int main() {
 	    std::cout << c.id << std::endl;
 	    charge_vector.push_back(std::make_shared<Charge>(c));
 	    // Edit Text
-	    chargeCount_int += 1;
 	    chargeCount.setString("Charges: " +
 	                          std::to_string(charge_vector.size()));
 	  }
