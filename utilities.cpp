@@ -5,8 +5,12 @@ void Line::setColor(sf::Color color) { vArray[0].color = vArray[1].color = color
 const sf::Vector2f Line::asVector() { return vArray[1].position - vArray[0].position; }
 const sf::VertexArray& Line::getVertexArray() { return vArray; }
 //Other utilities
+float lengthSqrd(sf::Vector2f v)
+{
+  return dotProduct(v, v);
+}
 float length(sf::Vector2f v){
-  return sqrt(v.x*v.x + v.y*v.y);
+  return sqrt(lengthSqrd(v));
 }
 float distance(sf::Vector2f v, sf::Vector2f w)
 {
@@ -15,4 +19,8 @@ float distance(sf::Vector2f v, sf::Vector2f w)
 sf::Vector2f unit(sf::Vector2f v)
 {
   return (length(v) == 0) ? v : v/length(v);
+}
+float dotProduct(sf::Vector2f v, sf::Vector2f w)
+{
+  return v.x*w.x + v.y*w.y;
 }

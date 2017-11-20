@@ -176,10 +176,20 @@ int main() {
     // Update physics
     for (auto s : charge_vector) {
       sf::Vector2f sPos = s->getPosition();
-      s->setPosition(sPos + s->getVelocity() * dt.asSeconds());
       s->setIsCursorOn(distance(sPos, mousePos) < s->getRadius());
-      s->getIsCursorOn() ? s->setFillColor(sf::Color::Red)
-                         : s->setFillColor(sf::Color::White);
+      s->getIsCursorOn() ? s->setFillColor(sf::Color::Red) : s->setFillColor(sf::Color::White);
+      for (auto r : charge_vector) {
+        if (detectChargeChargeCollision(*r, *s, dt.asSeconds())){
+          std::cout << "COLLISION" << std::endl;
+          sf::Vector2f velDiff = r->getVelocity() - s->getVelocity();
+          sf::Vector2f normal = unit(s->getPosition() - r->getPosition());//Points from r to s
+          float reducedMass = (r->getMass() * s->getMass()) / ( r->getMass() + s->getMass() );
+          sf::Vector2f J = 2*reducedMass*dotProduct(velDiff, normal)*normal;
+          r->incrementVelocity(-J/r->getMass());
+          s->incrementVelocity(J/s->getMass());
+        }
+      }
+      s->setPosition(sPos + s->getVelocity() * dt.asSeconds());
     }
     if (forceCharge != nullptr) {
       sf::Vector2f dF = force_line.asVector() * dt.asSeconds();
