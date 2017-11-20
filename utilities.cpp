@@ -1,3 +1,5 @@
+#ifndef UTILITIES_H
+#define UTILITIES_H
 #include "utilities.hpp"
 void Line::setVertexPosition(sf::Vector2f p, int b) { vArray[b%2].position = p; }
 void Line::setVerticesPosition(sf::Vector2f p0, sf::Vector2f p1) { vArray[0].position = p0; vArray[1].position = p1; }
@@ -24,3 +26,4 @@ float dotProduct(sf::Vector2f v, sf::Vector2f w)
 {
   return v.x*w.x + v.y*w.y;
 }
+#endif

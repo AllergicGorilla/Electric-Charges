@@ -3,12 +3,13 @@
 class Line
 {
   private:
-  sf::VertexArray vArray;
+    sf::VertexArray vArray;
+
   public:
     Line() : vArray(sf::Lines, 2)
     {
-      vArray[0].position = vArray[1].position = sf::Vector2f(0,0);
-      vArray[0].color = vArray[1].color = sf::Color::White;
+        vArray[0].position = vArray[1].position = sf::Vector2f(0, 0);
+        vArray[0].color = vArray[1].color = sf::Color::White;
     }
     void setVertexPosition(sf::Vector2f p, int b);
     void setVerticesPosition(sf::Vector2f p0, sf::Vector2f p1);
@@ -16,7 +17,7 @@ class Line
     const sf::Vector2f asVector();
     const sf::VertexArray& getVertexArray();
 };
-//Other utilities
+// Other utilities
 float lengthSqrd(sf::Vector2f v);
 float length(sf::Vector2f v);
 float distance(sf::Vector2f v, sf::Vector2f w);
