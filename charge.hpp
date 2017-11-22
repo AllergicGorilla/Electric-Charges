@@ -35,6 +35,7 @@ class Charge : public sf::CircleShape
     bool getIsCursorOn() const;
 
     void setForce(sf::Vector2f f);
+    void incrementForce(sf::Vector2f df);
     sf::Vector2f getForce() const;
 };
 bool detectChargeChargeCollision(const Charge c1, const Charge c2,

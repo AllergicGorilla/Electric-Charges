@@ -19,6 +19,7 @@ void Charge::setIsCursorOn(bool ico) { isCursorOn = ico; }
 bool Charge::getIsCursorOn() const { return isCursorOn; }
 
 void Charge::setForce(sf::Vector2f f) { force = f; }
+void Charge::incrementForce(sf::Vector2f df) { force += df; }
 sf::Vector2f Charge::getForce() const { return force; }
 
 bool detectChargeChargeCollision(const Charge c1, const Charge c2,
