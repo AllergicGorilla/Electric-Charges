@@ -14,27 +14,31 @@ class Tool
           currentPos(sf::Vector2f(0, 0))
     {
     }
+    virtual void setInitialPos(sf::Vector2f pos);
+    virtual void setCurrentPos(sf::Vector2f pos);
+
+  public:
     sf::Vector2f initialPos;
     sf::Vector2f currentPos;
     bool primaryButtonReleased;
-    void setInitialPos(sf::Vector2f pos);
-    void setCurrentPos(sf::Vector2f pos);
 };
 class ForceTool : public Tool
 {
   private:
     std::shared_ptr<Charge> forceCharge;
     Line forceLine;
+
+  private:
     void setInitialPos(sf::Vector2f pos) {}
 
   public:
     ForceTool() : Tool(), forceLine(sf::Color::Green) {}
     void usePrimary(bool isPressed,
-                    std::vector<std::shared_ptr<Charge>>& chargeVector,
+                    const std::vector<std::shared_ptr<Charge>>& chargeVector,
                     sf::Vector2f mousePos);
-    void applyForce();
+    void applyForce() const;
     void updateInitialPos();
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window) const;
     void setCurrentPos(sf::Vector2f pos);
 };
 class ChargeCreatorTool : public Tool
@@ -47,7 +51,7 @@ class ChargeCreatorTool : public Tool
     void usePrimary(bool isPressed,
                     std::vector<std::shared_ptr<Charge>>& chargeVector,
                     sf::Vector2f mousePos);
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window) const;
     void setCurrentPos(sf::Vector2f pos);
 };
 class FollowTool
@@ -62,6 +66,8 @@ class FollowTool
                     const std::vector<std::shared_ptr<Charge>>& chargeVector,
                     sf::Vector2f mousePos);
     bool focusViewOnCharge(sf::View& view);
+
+  public:
     const std::shared_ptr<Charge> getFollowCharge() const;
 };
 #endif

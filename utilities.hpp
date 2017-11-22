@@ -10,8 +10,8 @@ class Line
   public:
     Line(sf::Color color) : vArray(sf::Lines, 2)
     {
-      vArray[0].position = vArray[1].position = sf::Vector2f(0, 0);
-      vArray[0].color = vArray[1].color = color;
+        vArray[0].position = vArray[1].position = sf::Vector2f(0, 0);
+        vArray[0].color = vArray[1].color = color;
     }
     Line(sf::Vector2f p0 = sf::Vector2f(0, 0),
          sf::Vector2f p1 = sf::Vector2f(0, 0),

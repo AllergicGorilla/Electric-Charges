@@ -6,9 +6,9 @@ void ForceTool::setCurrentPos(sf::Vector2f pos)
     currentPos = pos;
     forceLine.setVertexPosition(currentPos, 1);
 }
-void ForceTool::usePrimary(bool isPressed,
-                           std::vector<std::shared_ptr<Charge>>& chargeVector,
-                           sf::Vector2f mousePos)
+void ForceTool::usePrimary(
+    bool isPressed, const std::vector<std::shared_ptr<Charge>>& chargeVector,
+    sf::Vector2f mousePos)
 {
     if (isPressed) {
         primaryButtonReleased = false;
@@ -31,7 +31,7 @@ void ForceTool::usePrimary(bool isPressed,
         forceCharge = nullptr;
     }
 }
-void ForceTool::applyForce()
+void ForceTool::applyForce() const
 {
     if (forceCharge != nullptr) {
         forceCharge->incrementForce(forceLine.asVector());
@@ -44,7 +44,7 @@ void ForceTool::updateInitialPos()
         forceLine.setVertexPosition(initialPos, 0);
     }
 }
-void ForceTool::draw(sf::RenderWindow& window)
+void ForceTool::draw(sf::RenderWindow& window) const
 {
     if (!primaryButtonReleased) {
         window.draw(forceLine.getVertexArray());
@@ -70,7 +70,7 @@ void ChargeCreatorTool::usePrimary(
         chargeVector.push_back(std::make_shared<Charge>(newCharge));
     }
 }
-void ChargeCreatorTool::draw(sf::RenderWindow& window)
+void ChargeCreatorTool::draw(sf::RenderWindow& window) const
 {
     if (!primaryButtonReleased) {
         window.draw(velocityLine.getVertexArray());
