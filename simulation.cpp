@@ -37,39 +37,10 @@ void Simulation::processEvents()
         if (event.type == sf::Event::Closed)
             mainWindow.close();
         if (event.type == sf::Event::MouseButtonPressed) {
-            if (event.mouseButton.button == sf::Mouse::Left) {
-                switch (currentTool) {
-                case force:
-                    forceTool.usePrimary(true, chargeVector, mainMousePos);
-                    break;
-                case charge:
-                    chargeCreatorTool.usePrimary(true, chargeVector,
-                                                 mainMousePos);
-                    break;
-                case follow: {
-                    followTool.usePrimary(true, chargeVector, mainMousePos);
-                    lockView = followTool.focusViewOnCharge(mainView);
-                    break;
-                }
-                }
-            }
+            handleMouseEvent(event.mouseButton.button, true);
         }
         if (event.type == sf::Event::MouseButtonReleased) {
-            if (event.mouseButton.button == sf::Mouse::Left) {
-                switch (currentTool) {
-                case force:
-                    forceTool.usePrimary(false, chargeVector, mainMousePos);
-                    break;
-                case charge: {
-                    chargeCreatorTool.usePrimary(false, chargeVector,
-                                                 mainMousePos);
-
-                    chargeCount.setString("Charges: " +
-                                          std::to_string(chargeVector.size()));
-                    break;
-                }
-                }
-            }
+            handleMouseEvent(event.mouseButton.button, false);
         }
         if (event.type == sf::Event::Resized) {
             // Update the mainView to the new size of the mainWindow
@@ -77,23 +48,45 @@ void Simulation::processEvents()
             mainWindow.setView(mainView);
         }
         if (event.type == sf::Event::KeyPressed) {
-            switch (event.key.code) {
-            case sf::Keyboard::C: currentTool = charge; break;
-            case sf::Keyboard::F: currentTool = force; break;
-            case sf::Keyboard::G:
-                currentTool = follow;
-                break;
-            // case sf::Keyboard::X: currentTool = trash; break;
-            case sf::Keyboard::L: lockView = false; break;
-            }
+            handleKeyboardEvent(event.key.code, true);
         }
     }
 }
-void handleKeyboardEvent(sf::Keyboard::Key key, bool isPressed) {}
-void handleMouseEvent(sf::Mouse::Button button, bool isPressed) { /*
-     switch (button) {
-     case sf::Mouse::Left: break;
-   }*/}
+void Simulation::handleKeyboardEvent(sf::Keyboard::Key key, bool isPressed)
+{
+    switch (key) {
+    case sf::Keyboard::C: currentTool = charge; break;
+    case sf::Keyboard::F: currentTool = force; break;
+    case sf::Keyboard::G: currentTool = follow; break;
+    case sf::Keyboard::L: lockView = false; break;
+    }
+}
+void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)
+{
+    switch (button) {
+    case sf::Mouse::Left: {
+        switch (currentTool) {
+        case force:
+            forceTool.usePrimary(isPressed, chargeVector, mainMousePos);
+            break;
+        case charge:
+            chargeCreatorTool.usePrimary(isPressed, chargeVector, mainMousePos);
+            if (!isPressed)
+                chargeCount.setString("Charges: " +
+                                      std::to_string(chargeVector.size()));
+            break;
+        case follow: {
+            if (isPressed) {
+                followTool.usePrimary(isPressed, chargeVector, mainMousePos);
+                lockView = followTool.focusViewOnCharge(mainView);
+            }
+            break;
+        }
+        }
+        break;
+    }
+    }
+}
 
 void Simulation::processRealTimeInput()
 {
@@ -148,7 +141,7 @@ void Simulation::update()
             (*s)->setFillColor(sf::Color::Red);
         } else
             (*s)->setFillColor(sf::Color::White);
-        for (chargePtrIter r = s; r != chargeVector.end(); r++) {
+        for (chargePtrIter r = s + 1; r != chargeVector.end(); r++) {
             if (detectChargeChargeCollision(*(*r), *(*s), dt.asSeconds())) {
                 std::cout << "COLLISION" << std::endl;
                 sf::Vector2f velDiff =
