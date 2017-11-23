@@ -1,6 +1,5 @@
 #include "simulation.hpp"
 
-
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
       mainView(sf::Vector2f(0, 0), sf::Vector2f(800, 800))
@@ -67,6 +66,7 @@ void Simulation::handleKeyboardEvent(sf::Keyboard::Key key, bool isPressed)
     case sf::Keyboard::L: lockView = false; break;
     case sf::Keyboard::X: selectionTool.removeCharges(chargeVector); break;
     case sf::Keyboard::A: selectionTool.selectAll(chargeVector); break;
+    case sf::Keyboard::P: currentTool = placeWall; break;
     }
 }
 void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)
@@ -89,6 +89,8 @@ void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)
         case select:
             selectionTool.usePrimary(isPressed, chargeVector, mainMousePos);
             break;
+        case placeWall:
+            placeWallTool.usePrimary(isPressed, wallVector, mainMousePos);
         }
         break;
     }
@@ -108,6 +110,9 @@ void Simulation::processRealTimeInput()
         if (currentTool == select) {
             selectionTool.updateSize(mainMousePos);
             selectionTool.updateSelection(chargeVector);
+        }
+        if (currentTool == placeWall) {
+            placeWallTool.setCurrentPos(mainMousePos);
         }
     }
     if (!lockView) {
@@ -194,6 +199,9 @@ void Simulation::render()
         if (s->getIsCursorOn()) {
             mainWindow.draw(s->velocityLine().getVertexArray());
         }
+    }
+    for (auto wall : wallVector) {
+        mainWindow.draw(wall->getVertexArray());
     }
     forceTool.draw(mainWindow);
     chargeCreatorTool.draw(mainWindow);

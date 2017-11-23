@@ -8,7 +8,7 @@ class Wall: public Line
     float mass;
     bool isMovable;
   public:
-    Wall(float mass, bool isMovable, sf::Vector2f p0, sf::Vector2f p1, sf::Color color);
+    Wall(float mass, bool isMovable, sf::Vector2f p0, sf::Vector2f p1, sf::Color color=sf::Color::Blue);
     float getMass() const;
     bool getIsMovable() const;
     void rotate(float dw);

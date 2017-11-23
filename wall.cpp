@@ -1,6 +1,6 @@
 #include "wall.hpp"
 Wall::Wall(float mass, bool isMovable, sf::Vector2f p0, sf::Vector2f p1,
-           sf::Color color = sf::Color::Blue)
+           sf::Color color)
     : Line(p0, p1, color), mass(mass)
 {
 }

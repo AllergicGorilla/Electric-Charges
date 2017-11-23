@@ -2,6 +2,7 @@
 #define TOOLS_H
 
 #include "charge.hpp"
+#include "wall.hpp"
 #include <SFML/Graphics.hpp>
 #include <algorithm>
 #include <iostream>
@@ -90,5 +91,15 @@ class SelectionTool : public Tool
     void selectAll(const std::vector<std::shared_ptr<Charge>>& chargeVector);
     void reset();
     void draw(sf::RenderWindow& window) const;
+};
+class PlaceWallTool : public Tool
+{
+private:
+  Line wallLine;
+public:
+  void usePrimary(bool isPressed,
+                  std::vector<std::shared_ptr<Wall>>& wallVector,
+                  sf::Vector2f mousePos);
+  void setCurrentPos(sf::Vector2f pos);
 };
 #endif

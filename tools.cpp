@@ -108,7 +108,8 @@ const std::shared_ptr<Charge> FollowTool::getFollowCharge() const
 {
     return followCharge;
 }
-SelectionTool::SelectionTool(): Tool(), selectedChargeOutlineColor(sf::Color::Magenta)
+SelectionTool::SelectionTool()
+    : Tool(), selectedChargeOutlineColor(sf::Color::Magenta)
 {
     sf::Color fillColor = sf::Color(20, 165, 255, 100);
     sf::Color outlineColor = fillColor;
@@ -134,8 +135,8 @@ void SelectionTool::usePrimary(
 void SelectionTool::updateSelection(
     const std::vector<std::shared_ptr<Charge>>& chargeVector)
 {
-    //Insert or remove charge* according to the selection
-    //Updates the color along the way
+    // Insert or remove charge* according to the selection
+    // Updates the color along the way
     using chargePtrIter = std::vector<std::shared_ptr<Charge>>::const_iterator;
     for (chargePtrIter it = chargeVector.begin(); it != chargeVector.end();
          it++) {
@@ -160,31 +161,52 @@ void SelectionTool::updateSize(sf::Vector2f pos)
     selectionBounds.width = (currentPos - initialPos).x;
     selectionBounds.height = (currentPos - initialPos).y;
 }
-void SelectionTool::removeCharges(std::vector<std::shared_ptr<Charge>>& chargeVector)
+void SelectionTool::removeCharges(
+    std::vector<std::shared_ptr<Charge>>& chargeVector)
 {
-  using chargePtrIter = std::vector<std::shared_ptr<Charge>>::iterator;
-  for (chargePtrIter it = selectedCharges.begin(); it != selectedCharges.end(); it++)
-  {
-    chargeVector.erase(std::remove(chargeVector.begin(), chargeVector.end(), *it), chargeVector.end());
-  }
-  this->reset();
+    using chargePtrIter = std::vector<std::shared_ptr<Charge>>::iterator;
+    for (chargePtrIter it = selectedCharges.begin();
+         it != selectedCharges.end(); it++) {
+        chargeVector.erase(
+            std::remove(chargeVector.begin(), chargeVector.end(), *it),
+            chargeVector.end());
+    }
+    this->reset();
 }
-void SelectionTool::selectAll(const std::vector<std::shared_ptr<Charge>>& chargeVector)
+void SelectionTool::selectAll(
+    const std::vector<std::shared_ptr<Charge>>& chargeVector)
 {
-  selectedCharges = chargeVector;
-  using chargePtrIter = std::vector<std::shared_ptr<Charge>>::const_iterator;
-  for (chargePtrIter it = selectedCharges.begin(); it != selectedCharges.end();it++)
-  {
-    (*it)->setOutlineColor(selectedChargeOutlineColor);
-  }
+    selectedCharges = chargeVector;
+    using chargePtrIter = std::vector<std::shared_ptr<Charge>>::const_iterator;
+    for (chargePtrIter it = selectedCharges.begin();
+         it != selectedCharges.end(); it++) {
+        (*it)->setOutlineColor(selectedChargeOutlineColor);
+    }
 }
 void SelectionTool::reset()
 {
-  selectedCharges.erase(selectedCharges.begin(),selectedCharges.end());
+    selectedCharges.erase(selectedCharges.begin(), selectedCharges.end());
 }
 void SelectionTool::draw(sf::RenderWindow& window) const
 {
     if (!primaryButtonReleased) {
         window.draw(selectionRectangle);
     }
+}
+void PlaceWallTool::usePrimary(bool isPressed, std::vector<std::shared_ptr<Wall>>& wallVector,
+                sf::Vector2f mousePos)
+{
+  if (isPressed) {
+      primaryButtonReleased = false;
+      initialPos = mousePos;
+      wallLine.setVertexPosition(initialPos, 0);
+  } else {
+      primaryButtonReleased = true;
+      Wall newWall(1.f, false, initialPos, currentPos);
+      wallVector.push_back(std::make_shared<Wall>(newWall));
+  }
+}
+void PlaceWallTool::setCurrentPos(sf::Vector2f pos)
+{
+  currentPos = pos;
 }
