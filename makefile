@@ -14,6 +14,6 @@ all: $(OBJECTS)
 $(OBJECTS): $(SOURCES)
 	    $(CXX) $(CXXFLAGS) -c $(SOURCES) $(LIBS)
 
-$(OBJECTS): charge.hpp utilities.hpp
+$(OBJECTS): charge.hpp vectorUtilities.hpp line.hpp wall.hpp
 clean:
 	rm -rf $(EXECUTABLE) $(OBJECTS)

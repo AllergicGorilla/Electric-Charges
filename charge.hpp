@@ -1,6 +1,7 @@
 #ifndef CHARGE_H
 #define CHARGE_H
-#include "utilities.hpp"
+#include "line.hpp"
+#include "vectorUtilities.hpp"
 #include <SFML/Graphics.hpp>
 class Charge : public sf::CircleShape
 {

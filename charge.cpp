@@ -25,6 +25,7 @@ sf::Vector2f Charge::getForce() const { return force; }
 bool detectChargeChargeCollision(const Charge c1, const Charge c2,
                                  const float dt)
 {
+    using namespace VectorUtilities;
     float distSqrd = lengthSqrd(c1.getPosition() - c2.getPosition());
     float radiusSqrd =
         (c1.getRadius() + c2.getRadius()) * (c1.getRadius() + c2.getRadius());

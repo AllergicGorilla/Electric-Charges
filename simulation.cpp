@@ -1,5 +1,6 @@
 #include "simulation.hpp"
 
+
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
       mainView(sf::Vector2f(0, 0), sf::Vector2f(800, 800))
@@ -135,6 +136,7 @@ void Simulation::processRealTimeInput()
 }
 void Simulation::update()
 {
+    using namespace VectorUtilities;
     // Update physics
     // Forces
     for (auto charge : chargeVector) {

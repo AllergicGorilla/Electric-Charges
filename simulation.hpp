@@ -3,7 +3,7 @@
 
 #include "charge.hpp"
 #include "tools.hpp"
-#include "utilities.hpp"
+#include "vectorUtilities.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <list>
