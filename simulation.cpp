@@ -65,6 +65,7 @@ void Simulation::handleKeyboardEvent(sf::Keyboard::Key key, bool isPressed)
     case sf::Keyboard::S: currentTool = select; break;
     case sf::Keyboard::L: lockView = false; break;
     case sf::Keyboard::X: selectionTool.removeCharges(chargeVector); break;
+    case sf::Keyboard::A: selectionTool.selectAll(chargeVector); break;
     }
 }
 void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)

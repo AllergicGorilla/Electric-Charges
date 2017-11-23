@@ -87,6 +87,7 @@ class SelectionTool : public Tool
     void updateSelection(
         const std::vector<std::shared_ptr<Charge>>& chargeVector);
     void removeCharges(std::vector<std::shared_ptr<Charge>>& chargeVector);
+    void selectAll(const std::vector<std::shared_ptr<Charge>>& chargeVector);
     void reset();
     void draw(sf::RenderWindow& window) const;
 };

@@ -169,6 +169,15 @@ void SelectionTool::removeCharges(std::vector<std::shared_ptr<Charge>>& chargeVe
   }
   this->reset();
 }
+void SelectionTool::selectAll(const std::vector<std::shared_ptr<Charge>>& chargeVector)
+{
+  selectedCharges = chargeVector;
+  using chargePtrIter = std::vector<std::shared_ptr<Charge>>::const_iterator;
+  for (chargePtrIter it = selectedCharges.begin(); it != selectedCharges.end();it++)
+  {
+    (*it)->setOutlineColor(selectedChargeOutlineColor);
+  }
+}
 void SelectionTool::reset()
 {
   selectedCharges.erase(selectedCharges.begin(),selectedCharges.end());
