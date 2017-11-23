@@ -20,11 +20,12 @@ class Simulation
     void render();
 
   private:
-    enum tool { force, charge, follow };
+    enum tool { force, charge, follow, select };
 
     tool currentTool;
     ForceTool forceTool;
     ChargeCreatorTool chargeCreatorTool;
+    SelectionTool selectionTool;
     FollowTool followTool;
     sf::Vector2f mainMousePos;
     sf::RenderWindow mainWindow;

@@ -19,6 +19,8 @@ class Charge : public sf::CircleShape
         : CircleShape(radius, pointCount), charge(charge), velocity(velocity),
           mass(mass), id(global_id++), force(sf::Vector2f(0.f, 0.f))
     {
+      this->setOutlineColor(sf::Color::Transparent);
+      this->setOutlineThickness(2.f);
     }
     const uint32_t id;
 

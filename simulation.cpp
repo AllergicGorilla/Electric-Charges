@@ -41,6 +41,8 @@ void Simulation::processEvents()
         }
         if (event.type == sf::Event::MouseButtonReleased) {
             handleMouseEvent(event.mouseButton.button, false);
+            chargeCount.setString("Charges: " +
+                                  std::to_string(chargeVector.size()));
         }
         if (event.type == sf::Event::Resized) {
             // Update the mainView to the new size of the mainWindow
@@ -49,6 +51,8 @@ void Simulation::processEvents()
         }
         if (event.type == sf::Event::KeyPressed) {
             handleKeyboardEvent(event.key.code, true);
+            chargeCount.setString("Charges: " +
+                                  std::to_string(chargeVector.size()));
         }
     }
 }
@@ -58,7 +62,9 @@ void Simulation::handleKeyboardEvent(sf::Keyboard::Key key, bool isPressed)
     case sf::Keyboard::C: currentTool = charge; break;
     case sf::Keyboard::F: currentTool = force; break;
     case sf::Keyboard::G: currentTool = follow; break;
+    case sf::Keyboard::S: currentTool = select; break;
     case sf::Keyboard::L: lockView = false; break;
+    case sf::Keyboard::X: selectionTool.removeCharges(chargeVector); break;
     }
 }
 void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)
@@ -71,17 +77,16 @@ void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)
             break;
         case charge:
             chargeCreatorTool.usePrimary(isPressed, chargeVector, mainMousePos);
-            if (!isPressed)
-                chargeCount.setString("Charges: " +
-                                      std::to_string(chargeVector.size()));
             break;
-        case follow: {
+        case follow:
             if (isPressed) {
                 followTool.usePrimary(isPressed, chargeVector, mainMousePos);
                 lockView = followTool.focusViewOnCharge(mainView);
             }
             break;
-        }
+        case select:
+            selectionTool.usePrimary(isPressed, chargeVector, mainMousePos);
+            break;
         }
         break;
     }
@@ -97,6 +102,10 @@ void Simulation::processRealTimeInput()
         }
         if (currentTool == charge) {
             chargeCreatorTool.setCurrentPos(mainMousePos);
+        }
+        if (currentTool == select) {
+            selectionTool.updateSize(mainMousePos);
+            selectionTool.updateSelection(chargeVector);
         }
     }
     if (!lockView) {
@@ -185,6 +194,7 @@ void Simulation::render()
     }
     forceTool.draw(mainWindow);
     chargeCreatorTool.draw(mainWindow);
+    selectionTool.draw(mainWindow);
 
     // Draw Text
     mainWindow.draw(chargeCount);

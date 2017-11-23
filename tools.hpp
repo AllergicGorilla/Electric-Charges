@@ -3,9 +3,9 @@
 
 #include "charge.hpp"
 #include <SFML/Graphics.hpp>
+#include <algorithm>
 #include <iostream>
 #include <memory>
-
 class Tool
 {
   public:
@@ -47,7 +47,7 @@ class ChargeCreatorTool : public Tool
     Line velocityLine;
 
   public:
-    ChargeCreatorTool() : velocityLine(sf::Color::White) {}
+    ChargeCreatorTool() : Tool(), velocityLine(sf::Color::White) {}
     void usePrimary(bool isPressed,
                     std::vector<std::shared_ptr<Charge>>& chargeVector,
                     sf::Vector2f mousePos);
@@ -69,5 +69,25 @@ class FollowTool
 
   public:
     const std::shared_ptr<Charge> getFollowCharge() const;
+};
+class SelectionTool : public Tool
+{
+  private:
+    std::vector<std::shared_ptr<Charge>> selectedCharges;
+    sf::Color selectedChargeOutlineColor;
+    sf::RectangleShape selectionRectangle;
+    sf::FloatRect selectionBounds;
+
+  public:
+    SelectionTool();
+    void usePrimary(bool isPressed,
+                    const std::vector<std::shared_ptr<Charge>>& chargeVector,
+                    sf::Vector2f mousePos);
+    void updateSize(sf::Vector2f pos);
+    void updateSelection(
+        const std::vector<std::shared_ptr<Charge>>& chargeVector);
+    void removeCharges(std::vector<std::shared_ptr<Charge>>& chargeVector);
+    void reset();
+    void draw(sf::RenderWindow& window) const;
 };
 #endif
