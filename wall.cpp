@@ -1,11 +1,9 @@
 #include "wall.hpp"
-Wall::Wall(float mass, bool isMovable, sf::Vector2f p0, sf::Vector2f p1,
+Wall::Wall(sf::Vector2f p0, sf::Vector2f p1,
            sf::Color color)
-    : Line(p0, p1, color), mass(mass)
+    : Line(p0, p1, color)
 {
 }
-float Wall::getMass() const { return mass; }
-bool Wall::getIsMovable() const { return isMovable; }
 void Wall::rotate(float dw)
 {
     sf::Vector2f center = this->getCenter();

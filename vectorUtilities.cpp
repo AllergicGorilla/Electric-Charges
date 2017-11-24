@@ -19,3 +19,7 @@ sf::Vector2f VectorUtilities::rotate(sf::Vector2f v, float dw)
     w.y = dotProduct(v, sf::Vector2f(sinf(dw), cosf(dw)));
     return w;
 }
+sf::Vector2f VectorUtilities::normal(sf::Vector2f v)
+{
+  return unit(sf::Vector2f(-v.y, v.x));
+}

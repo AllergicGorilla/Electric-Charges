@@ -2,6 +2,7 @@
 #define LINE_H
 #include <SFML/Graphics.hpp>
 #include <cmath>
+
 class Line
 {
   protected:
@@ -27,7 +28,8 @@ class Line
     void setColor(sf::Color color);
     sf::Vector2f asVector() const;
     const sf::VertexArray& getVertexArray() const;
-    sf::Vector2f getCenter();
+    sf::Vector2f getCenter() const;
     void translate(sf::Vector2f dx);
+    sf::Vector2f normal() const;
 };
 #endif

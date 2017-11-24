@@ -8,6 +8,7 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <cmath>
 
 class Simulation
 {
@@ -44,4 +45,5 @@ class Simulation
     Simulation();
     void run();
 };
+bool detectChargeWallCollision(const Charge& charge, const Wall& wall);
 #endif

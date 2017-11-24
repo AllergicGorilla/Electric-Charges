@@ -202,7 +202,7 @@ void PlaceWallTool::usePrimary(bool isPressed, std::vector<std::shared_ptr<Wall>
       wallLine.setVertexPosition(initialPos, 0);
   } else {
       primaryButtonReleased = true;
-      Wall newWall(1.f, false, initialPos, currentPos);
+      Wall newWall(initialPos, currentPos);
       wallVector.push_back(std::make_shared<Wall>(newWall));
   }
 }

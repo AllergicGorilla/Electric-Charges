@@ -144,20 +144,22 @@ void Simulation::update()
     using namespace VectorUtilities;
     // Update physics
     // Forces
-    for (auto charge : chargeVector) {
-        charge->setForce(sf::Vector2f(0, 0));
+    for (auto chargePtr : chargeVector) {
+        chargePtr->setForce(sf::Vector2f(0, 0));
     }
     forceTool.applyForce();
-    using chargePtrIter = std::vector<std::shared_ptr<Charge>>::iterator;
+    using chargePtrIter = std::vector<std::shared_ptr<Charge>>::const_iterator;
+    using wallPtrIter = std::vector<std::shared_ptr<Wall>>::const_iterator;
     for (chargePtrIter s = chargeVector.begin(); s != chargeVector.end(); s++) {
 
-        // Collision
         sf::Vector2f sPos = (*s)->getPosition();
         (*s)->setIsCursorOn(distance(sPos, mainMousePos) < (*s)->getRadius());
-        if ((*s)->getIsCursorOn()) {
+        if ((*s)->getIsCursorOn())
             (*s)->setFillColor(sf::Color::Red);
-        } else
+        else
             (*s)->setFillColor(sf::Color::White);
+
+        // Circle-Circle Collision
         for (chargePtrIter r = s + 1; r != chargeVector.end(); r++) {
             if (detectChargeChargeCollision(*(*r), *(*s), dt.asSeconds())) {
                 std::cout << "COLLISION" << std::endl;
@@ -172,6 +174,23 @@ void Simulation::update()
                     2 * reducedMass * dotProduct(velDiff, normal) * normal;
                 (*r)->incrementForce(-J / dt.asSeconds());
                 (*s)->incrementForce(J / dt.asSeconds());
+            }
+        }
+        // Circle-Wall collision
+        for (wallPtrIter wIter = wallVector.begin(); wIter != wallVector.end();
+             wIter++) {
+            Wall& wall = *(*wIter);
+            Charge& charge = *(*s);
+            if (detectChargeWallCollision(charge, wall)) {
+                sf::Vector2f velocityParallel =
+                    dotProduct(charge.getVelocity(), unit(wall.asVector())) *
+                    unit(wall.asVector());
+                sf::Vector2f velocityPerpendicular =
+                    dotProduct(charge.getVelocity(), wall.normal()) *
+                    wall.normal();
+                sf::Vector2f newVelocity =
+                    velocityParallel - velocityPerpendicular;
+                charge.setVelocity(newVelocity);
             }
         }
     }
@@ -210,4 +229,16 @@ void Simulation::render()
     // Draw Text
     mainWindow.draw(chargeCount);
     mainWindow.display();
+}
+
+bool detectChargeWallCollision(const Charge& charge, const Wall& wall)
+{
+    // Test if distance <= radius
+    // and if the charge is coming at the wall
+    sf::Vector2f centerDistance = wall.getCenter() - charge.getPosition();
+    float distance = VectorUtilities::dotProduct(centerDistance, wall.normal());
+    float velocityFlux =
+        VectorUtilities::dotProduct(charge.getVelocity(), wall.normal());
+    bool comingAtWall = (velocityFlux * distance > 0.f);
+    return comingAtWall && (std::abs(distance) <= charge.getRadius());
 }

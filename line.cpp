@@ -1,4 +1,5 @@
 #include "line.hpp"
+#include "vectorUtilities.hpp"
 void Line::setVertexPosition(sf::Vector2f p, int b)
 {
     vArray[b % 2].position = p;
@@ -17,9 +18,13 @@ sf::Vector2f Line::asVector() const
     return vArray[1].position - vArray[0].position;
 }
 const sf::VertexArray& Line::getVertexArray() const { return vArray; }
-sf::Vector2f Line::getCenter() { return this->asVector() / 2.f; }
+sf::Vector2f Line::getCenter() const { return (vArray[1].position + vArray[0].position) / 2.f; }
 void Line::translate(sf::Vector2f dx)
 {
     vArray[0].position += dx;
     vArray[1].position += dx;
+}
+sf::Vector2f Line::normal() const
+{
+  return VectorUtilities::normal(VectorUtilities::unit(this->asVector()));
 }
