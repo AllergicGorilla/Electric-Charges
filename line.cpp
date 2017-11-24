@@ -4,6 +4,7 @@ void Line::setVertexPosition(sf::Vector2f p, int b)
 {
     vArray[b % 2].position = p;
 }
+sf::Vector2f Line::getVertexPosition(int b) const { return vArray[b % 2].position; }
 void Line::setVerticesPosition(sf::Vector2f p0, sf::Vector2f p1)
 {
     vArray[0].position = p0;

@@ -235,10 +235,24 @@ bool detectChargeWallCollision(const Charge& charge, const Wall& wall)
 {
     // Test if distance <= radius
     // and if the charge is coming at the wall
-    sf::Vector2f centerDistance = wall.getCenter() - charge.getPosition();
-    float distance = VectorUtilities::dotProduct(centerDistance, wall.normal());
-    float velocityFlux =
-        VectorUtilities::dotProduct(charge.getVelocity(), wall.normal());
-    bool comingAtWall = (velocityFlux * distance > 0.f);
-    return comingAtWall && (std::abs(distance) <= charge.getRadius());
+    using namespace VectorUtilities;
+    sf::Vector2f ray = wall.getVertexPosition(0)- charge.getPosition();
+    float distance = dotProduct(ray, wall.normal());
+    float velocityFlux = dotProduct(charge.getVelocity(), wall.normal());
+    bool isComingAtWall = (velocityFlux * distance > 0.f);
+    float a = dotProduct(wall.asVector(), wall.asVector());
+    float b = 2 * dotProduct(wall.asVector(), ray);
+    float c = dotProduct(ray, ray) -
+              charge.getRadius() * charge.getRadius();
+
+    bool intersects = false;
+    float discriminant = b * b - 4 * a * c;
+    if (discriminant > 0) {
+        discriminant = std::sqrt(discriminant);
+        float t1 = (-b - discriminant) / (2 * a);
+        float t2 = (-b + discriminant) / (2 * a);
+        if (t1 >= 0 && t1 <= 1)
+            intersects = true;
+    }
+    return intersects && isComingAtWall;
 }

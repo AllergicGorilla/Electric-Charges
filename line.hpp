@@ -24,6 +24,7 @@ class Line
         vArray[0].color = vArray[1].color = color;
     }
     void setVertexPosition(sf::Vector2f p, int b);
+    sf::Vector2f getVertexPosition(int b) const;
     void setVerticesPosition(sf::Vector2f p0, sf::Vector2f p1);
     void setColor(sf::Color color);
     sf::Vector2f asVector() const;
