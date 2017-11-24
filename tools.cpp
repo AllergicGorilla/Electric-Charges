@@ -92,7 +92,7 @@ void FollowTool::usePrimary(
             if (chargePtr->getIsCursorOn()) {
                 followCharge = chargePtr;
                 break;
-            }
+            } else followCharge=nullptr;
         }
     }
 }
