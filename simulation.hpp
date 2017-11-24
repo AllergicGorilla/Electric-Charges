@@ -5,10 +5,10 @@
 #include "tools.hpp"
 #include "vectorUtilities.hpp"
 #include <SFML/Graphics.hpp>
+#include <cmath>
 #include <iostream>
 #include <list>
 #include <memory>
-#include <cmath>
 
 class Simulation
 {
@@ -37,7 +37,7 @@ class Simulation
     std::vector<std::shared_ptr<Wall>> wallVector;
     sf::Text chargeCount;
     sf::Clock mainClock;
-    sf::Time dt;
+    float dt;
     bool lockView;
     float viewSpeed;
 

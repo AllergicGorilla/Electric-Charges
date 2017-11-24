@@ -85,8 +85,8 @@ class SelectionTool : public Tool
                     const std::vector<std::shared_ptr<Charge>>& chargeVector,
                     sf::Vector2f mousePos);
     void updateSize(sf::Vector2f pos);
-    void updateSelection(
-        const std::vector<std::shared_ptr<Charge>>& chargeVector);
+    void
+    updateSelection(const std::vector<std::shared_ptr<Charge>>& chargeVector);
     void removeCharges(std::vector<std::shared_ptr<Charge>>& chargeVector);
     void selectAll(const std::vector<std::shared_ptr<Charge>>& chargeVector);
     void reset();
@@ -94,12 +94,13 @@ class SelectionTool : public Tool
 };
 class PlaceWallTool : public Tool
 {
-private:
-  Line wallLine;
-public:
-  void usePrimary(bool isPressed,
-                  std::vector<std::shared_ptr<Wall>>& wallVector,
-                  sf::Vector2f mousePos);
-  void setCurrentPos(sf::Vector2f pos);
+  private:
+    Line wallLine;
+
+  public:
+    void usePrimary(bool isPressed,
+                    std::vector<std::shared_ptr<Wall>>& wallVector,
+                    sf::Vector2f mousePos);
+    void setCurrentPos(sf::Vector2f pos);
 };
 #endif

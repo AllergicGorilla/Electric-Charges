@@ -7,6 +7,7 @@ Simulation::Simulation()
 {
     lockView = false;
     viewSpeed = 0.8f;
+    dt = 0.01667f;
     currentTool = charge;
     if (!courierPrime.loadFromFile("Courier Prime.ttf")) {
         // Hold up, mah boi
@@ -20,13 +21,19 @@ Simulation::Simulation()
 }
 void Simulation::run()
 {
+    sf::Time frameTime = mainClock.restart();
+    float accumulator = 0.f;
     while (mainWindow.isOpen()) {
-        dt = mainClock.restart();
+        frameTime = mainClock.restart();
+        accumulator += frameTime.asSeconds();
         mainMousePos =
             mainWindow.mapPixelToCoords(sf::Mouse::getPosition(mainWindow));
         processEvents();
         processRealTimeInput();
-        update();
+        while (accumulator >= dt) {
+            update();
+            accumulator -= dt;
+        }
         render();
     }
 }
@@ -161,7 +168,7 @@ void Simulation::update()
 
         // Circle-Circle Collision
         for (chargePtrIter r = s + 1; r != chargeVector.end(); r++) {
-            if (detectChargeChargeCollision(*(*r), *(*s), dt.asSeconds())) {
+            if (detectChargeChargeCollision(*(*r), *(*s), dt)) {
                 std::cout << "COLLISION" << std::endl;
                 sf::Vector2f velDiff =
                     (*r)->getVelocity() - (*s)->getVelocity();
@@ -172,8 +179,8 @@ void Simulation::update()
                                     ((*r)->getMass() + (*s)->getMass());
                 sf::Vector2f J =
                     2 * reducedMass * dotProduct(velDiff, normal) * normal;
-                (*r)->incrementForce(-J / dt.asSeconds());
-                (*s)->incrementForce(J / dt.asSeconds());
+                (*r)->incrementForce(-J / dt);
+                (*s)->incrementForce(J / dt);
             }
         }
         // Circle-Wall collision
@@ -197,10 +204,8 @@ void Simulation::update()
     // Velocity
     // Position
     for (auto charge : chargeVector) {
-        charge->incrementVelocity(dt.asSeconds() * charge->getForce() /
-                                  charge->getMass());
-        charge->setPosition(charge->getPosition() +
-                            charge->getVelocity() * dt.asSeconds());
+        charge->incrementVelocity(dt * charge->getForce() / charge->getMass());
+        charge->setPosition(charge->getPosition() + charge->getVelocity() * dt);
     }
 
     // WHERE  ELSE TO PUT THIS?
@@ -236,14 +241,13 @@ bool detectChargeWallCollision(const Charge& charge, const Wall& wall)
     // Test if distance <= radius
     // and if the charge is coming at the wall
     using namespace VectorUtilities;
-    sf::Vector2f ray = wall.getVertexPosition(0)- charge.getPosition();
+    sf::Vector2f ray = wall.getVertexPosition(0) - charge.getPosition();
     float distance = dotProduct(ray, wall.normal());
     float velocityFlux = dotProduct(charge.getVelocity(), wall.normal());
     bool isComingAtWall = (velocityFlux * distance > 0.f);
     float a = dotProduct(wall.asVector(), wall.asVector());
     float b = 2 * dotProduct(wall.asVector(), ray);
-    float c = dotProduct(ray, ray) -
-              charge.getRadius() * charge.getRadius();
+    float c = dotProduct(ray, ray) - charge.getRadius() * charge.getRadius();
 
     bool intersects = false;
     float discriminant = b * b - 4 * a * c;
