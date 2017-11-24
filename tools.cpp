@@ -81,7 +81,7 @@ void ChargeCreatorTool::setCurrentPos(sf::Vector2f pos)
     currentPos = pos;
     velocityLine.setVertexPosition(currentPos, 1);
 }
-
+-charge.getPosition()
 // FollowTool
 void FollowTool::usePrimary(
     bool isPressed, const std::vector<std::shared_ptr<Charge>>& chargeVector,
@@ -92,7 +92,7 @@ void FollowTool::usePrimary(
             if (chargePtr->getIsCursorOn()) {
                 followCharge = chargePtr;
                 break;
-            }
+            } else followCharge=nullptr;
         }
     }
 }
