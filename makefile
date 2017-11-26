@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++11
-LIBS = -lsfml-graphics -lsfml-window -lsfml-system
+LIBS = -lsfml-graphics -lsfml-window -lsfml-system -ltgui
 SOURCES = $(wildcard *.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE=Electric

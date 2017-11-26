@@ -4,7 +4,7 @@
 #include "charge.hpp"
 #include "tools.hpp"
 #include "vectorUtilities.hpp"
-#include <SFML/Graphics.hpp>
+#include <TGUI/TGUI.hpp>
 #include <cmath>
 #include <iostream>
 #include <list>
@@ -19,27 +19,36 @@ class Simulation
     void handleMouseEvent(sf::Mouse::Button button, bool isPressed);
     void update();
     void render();
+    void loadWidgets();
 
   private:
+    //Tools
     enum tool { force, charge, follow, select, placeWall };
-
     tool currentTool;
     ForceTool forceTool;
     ChargeCreatorTool chargeCreatorTool;
     SelectionTool selectionTool;
     FollowTool followTool;
     PlaceWallTool placeWallTool;
+    //Window & view
     sf::Vector2f mainMousePos;
     sf::RenderWindow mainWindow;
     sf::View mainView;
-    sf::Font courierPrime;
-    std::vector<std::shared_ptr<Charge>> chargeVector;
-    std::vector<std::shared_ptr<Wall>> wallVector;
-    sf::Text chargeCount;
-    sf::Clock mainClock;
-    float dt;
     bool lockView;
     float viewSpeed;
+    //Text
+    sf::Font courierPrime;
+    sf::String chargeCount;
+    //Objects
+    std::vector<std::shared_ptr<Charge>> chargeVector;
+    std::vector<std::shared_ptr<Wall>> wallVector;
+    //Time
+    sf::Clock mainClock;
+    float dt;
+    //GUI
+    tgui::Gui gui;
+    tgui::TextBox::Ptr textBox;
+
 
   public:
     Simulation();

@@ -2,25 +2,32 @@
 
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
-      mainView(sf::Vector2f(0, 0), sf::Vector2f(800, 800))
+      mainView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow)
 
 {
     lockView = false;
     viewSpeed = 0.8f;
     dt = 0.01667f;
     currentTool = charge;
-    if (!courierPrime.loadFromFile("Courier Prime.ttf")) {
-        // Hold up, mah boi
-        std::cout << "Font file was unable to be loaded" << std::endl;
-        mainWindow.close();
-    }
-    chargeCount.setString("Charges: 0");
-    chargeCount.setFont(courierPrime);
-    chargeCount.setCharacterSize(30);
-    chargeCount.setPosition(mainWindow.mapPixelToCoords(sf::Vector2i(0, 0)));
+    //Text
+    chargeCount = "Charges: 0";
+}
+void Simulation::loadWidgets()
+{
+  auto width = tgui::bindWidth(gui);
+  auto height = tgui::bindHeight(gui);
+  // GUI
+  textBox = tgui::TextBox::create();
+  textBox->setText(chargeCount);
+  textBox->setSize(sf::Vector2f(120,20));
+  textBox->setPosition(-width*0.5f , -height*0.5f);
+  textBox->setReadOnly(true);
+  gui.add(textBox);
+
 }
 void Simulation::run()
 {
+    loadWidgets();
     sf::Time frameTime = mainClock.restart();
     float accumulator = 0.f;
     while (mainWindow.isOpen()) {
@@ -28,6 +35,8 @@ void Simulation::run()
         accumulator += frameTime.asSeconds();
         mainMousePos =
             mainWindow.mapPixelToCoords(sf::Mouse::getPosition(mainWindow));
+        std::cout << "(" << mainMousePos.x << ", " << mainMousePos.y << ")"
+                  << std::endl;
         processEvents();
         processRealTimeInput();
         while (accumulator >= dt) {
@@ -48,19 +57,21 @@ void Simulation::processEvents()
         }
         if (event.type == sf::Event::MouseButtonReleased) {
             handleMouseEvent(event.mouseButton.button, false);
-            chargeCount.setString("Charges: " +
-                                  std::to_string(chargeVector.size()));
+            chargeCount = "Charges: " +
+                                  std::to_string(chargeVector.size()); textBox->setText(chargeCount);
         }
         if (event.type == sf::Event::Resized) {
             // Update the mainView to the new size of the mainWindow
             mainView.setSize(event.size.width, event.size.height);
             mainWindow.setView(mainView);
+            gui.setView(mainView);
         }
         if (event.type == sf::Event::KeyPressed) {
             handleKeyboardEvent(event.key.code, true);
-            chargeCount.setString("Charges: " +
-                                  std::to_string(chargeVector.size()));
+            chargeCount = "Charges: " +
+                                  std::to_string(chargeVector.size()); textBox->setText(chargeCount);
         }
+        gui.handleEvent(event);
     }
 }
 void Simulation::handleKeyboardEvent(sf::Keyboard::Key key, bool isPressed)
@@ -230,9 +241,8 @@ void Simulation::render()
     forceTool.draw(mainWindow);
     chargeCreatorTool.draw(mainWindow);
     selectionTool.draw(mainWindow);
-
-    // Draw Text
-    mainWindow.draw(chargeCount);
+    // Draw Gui
+    gui.draw();
     mainWindow.display();
 }
 
