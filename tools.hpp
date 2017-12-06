@@ -47,13 +47,20 @@ class ChargeCreatorTool : public Tool
   private:
     Line velocityLine;
 
+
   public:
-    ChargeCreatorTool() : Tool(), velocityLine(sf::Color::White) {}
+    ChargeCreatorTool() : Tool(), velocityLine(sf::Color::White)
+    {
+        chargeMass = 1.f;
+        chargeRadius = 1.f;
+    }
     void usePrimary(bool isPressed,
                     std::vector<std::shared_ptr<Charge>>& chargeVector,
                     sf::Vector2f mousePos);
     void draw(sf::RenderWindow& window) const;
     void setCurrentPos(sf::Vector2f pos);
+    float chargeMass;
+    float chargeRadius;
 };
 class FollowTool
 {

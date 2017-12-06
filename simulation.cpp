@@ -150,7 +150,22 @@ void Simulation::processRealTimeInput()
             mainView.move(0, viewSpeed);
             mainWindow.setView(mainView);
         }
-    } /*else {
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y)) {
+      chargeCreatorTool.chargeMass += 0.1f;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+      chargeCreatorTool.chargeMass -= 0.1f;
+      if (chargeCreatorTool.chargeMass < 1.f) chargeCreatorTool.chargeMass = 1.f;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) {
+      chargeCreatorTool.chargeRadius += 0.1f;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
+      chargeCreatorTool.chargeRadius -= 0.1f;
+      if (chargeCreatorTool.chargeRadius < 1.f) chargeCreatorTool.chargeRadius = 1.f;
+    }
+    /*else {
         if (followCharge != nullptr) {
             mainView.setCenter(followCharge->getPosition());
             mainWindow.setView(mainView);
