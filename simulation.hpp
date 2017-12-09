@@ -9,6 +9,8 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <iomanip>
+#include <sstream>
 
 class Simulation
 {
@@ -20,6 +22,7 @@ class Simulation
     void update();
     void render();
     void loadWidgets();
+    void zoomMainViewAt(sf::Vector2i pixel, float zoom);
 
   private:
     //Tools
@@ -34,8 +37,10 @@ class Simulation
     sf::Vector2f mainMousePos;
     sf::RenderWindow mainWindow;
     sf::View mainView;
+    sf::View guiView;
     bool lockView;
     float viewSpeed;
+    float zoomAmount;
     //Text
     sf::Font courierPrime;
     sf::String chargeCount;
@@ -48,6 +53,8 @@ class Simulation
     //GUI
     tgui::Gui gui;
     tgui::Label::Ptr chargeText;
+    tgui::Label::Ptr radiusText;
+    tgui::Label::Ptr massText;
     tgui::HorizontalLayout::Ptr h_Layout;
     tgui::Button::Ptr forceToolButton;
     tgui::Button::Ptr chargeCreatorToolButton;
@@ -61,4 +68,5 @@ class Simulation
     void run();
 };
 bool detectChargeWallCollision(const Charge& charge, const Wall& wall);
+
 #endif

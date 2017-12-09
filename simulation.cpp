@@ -2,59 +2,75 @@
 
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
-      mainView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow)
+      mainView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)),
+      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow)
 
 {
     lockView = false;
     viewSpeed = 0.8f;
+    zoomAmount = 1.05f;
     dt = 0.01667f;
     currentTool = charge;
-    //Text
+    // Text
     chargeCount = "Charges: 0";
 }
 void Simulation::loadWidgets()
 {
-  auto width = tgui::bindWidth(gui);
-  auto height = tgui::bindHeight(gui);
-  // GUI
-  //Text
-  chargeText = tgui::Label::create();
-  chargeText->setTextColor(sf::Color::White);
-  chargeText->setText(chargeCount);
-  chargeText->setSize(sf::Vector2f(120,30));
-  chargeText->setPosition(-width*0.5f , -height*0.5f);
-  gui.add(chargeText);
-  //Horizontal layout for Toolbar
-  h_Layout = tgui::HorizontalLayout::create();
-  h_Layout->setSize(sf::Vector2f(500,20));
-  h_Layout->setPosition(-width*0.125f , height*0.45f);
-  gui.add(h_Layout);
-  //Tool buttons
-  forceToolButton = tgui::Button::create("Force (F)");
-  forceToolButton->setSize(sf::Vector2f(120,20));
-  forceToolButton->connect("pressed", [&](){ currentTool = force; });
-  h_Layout->add(forceToolButton);
+    auto width = tgui::bindWidth(gui);
+    auto height = tgui::bindHeight(gui);
+    // GUI
+    // Text
+    chargeText = tgui::Label::create();
+    chargeText->setTextColor(sf::Color::White);
+    chargeText->setText(chargeCount);
+    chargeText->setSize(sf::Vector2f(120, 30));
+    chargeText->setPosition(-width * 0.5f, -height * 0.5f);
+    gui.add(chargeText);
 
-  chargeCreatorToolButton = tgui::Button::create("Charge (C)");
-  chargeCreatorToolButton->setSize(sf::Vector2f(120,20));
-  chargeCreatorToolButton->connect("pressed", [&](){ currentTool = charge; });
-  h_Layout->add(chargeCreatorToolButton);
+    radiusText = tgui::Label::create();
+    radiusText->setTextColor(sf::Color::White);
+    radiusText->setText("Radius=1.0");
+    radiusText->setSize(sf::Vector2f(120, 30));
+    radiusText->setPosition(-width * 0.5f, -height * 0.45f);
+    gui.add(radiusText);
 
-  selectionToolButton = tgui::Button::create("Selection (S)");
-  selectionToolButton->setSize(sf::Vector2f(120,20));
-  selectionToolButton->connect("pressed", [&](){ currentTool = select; });
-  h_Layout->add(selectionToolButton);
+    massText = tgui::Label::create();
+    massText->setTextColor(sf::Color::White);
+    massText->setText("Mass=1.0");
+    massText->setSize(sf::Vector2f(120, 30));
+    massText->setPosition(-width * 0.5f, -height * 0.4f);
+    gui.add(massText);
+    // Horizontal layout for Toolbar
+    h_Layout = tgui::HorizontalLayout::create();
+    h_Layout->setSize(sf::Vector2f(500, 20));
+    h_Layout->setPosition(-width * 0.125f, height * 0.45f);
+    gui.add(h_Layout);
+    // Tool buttons
+    forceToolButton = tgui::Button::create("Force (F)");
+    forceToolButton->setSize(sf::Vector2f(120, 20));
+    forceToolButton->connect("pressed", [&]() { currentTool = force; });
+    h_Layout->add(forceToolButton);
 
-  followToolButton = tgui::Button::create("Follow (G)");
-  followToolButton->setSize(sf::Vector2f(120,20));
-  followToolButton->connect("pressed", [&](){ currentTool = follow; });
-  h_Layout->add(followToolButton);
+    chargeCreatorToolButton = tgui::Button::create("Charge (C)");
+    chargeCreatorToolButton->setSize(sf::Vector2f(120, 20));
+    chargeCreatorToolButton->connect("pressed",
+                                     [&]() { currentTool = charge; });
+    h_Layout->add(chargeCreatorToolButton);
 
-  placeWallToolButton = tgui::Button::create("Wall (P)");
-  placeWallToolButton->setSize(sf::Vector2f(120,20));
-  placeWallToolButton->connect("pressed", [&](){ currentTool = placeWall; });
-  h_Layout->add(placeWallToolButton);
+    selectionToolButton = tgui::Button::create("Selection (S)");
+    selectionToolButton->setSize(sf::Vector2f(120, 20));
+    selectionToolButton->connect("pressed", [&]() { currentTool = select; });
+    h_Layout->add(selectionToolButton);
 
+    followToolButton = tgui::Button::create("Follow (G)");
+    followToolButton->setSize(sf::Vector2f(120, 20));
+    followToolButton->connect("pressed", [&]() { currentTool = follow; });
+    h_Layout->add(followToolButton);
+
+    placeWallToolButton = tgui::Button::create("Wall (P)");
+    placeWallToolButton->setSize(sf::Vector2f(120, 20));
+    placeWallToolButton->connect("pressed", [&]() { currentTool = placeWall; });
+    h_Layout->add(placeWallToolButton);
 }
 void Simulation::run()
 {
@@ -89,21 +105,27 @@ void Simulation::processEvents()
         }
         if (event.type == sf::Event::MouseButtonReleased && !guiHandledEvent) {
             handleMouseEvent(event.mouseButton.button, false);
-            chargeCount = "Charges: " +
-                                  std::to_string(chargeVector.size()); chargeText->setText(chargeCount);
+            chargeCount = "Charges: " + std::to_string(chargeVector.size());
+            chargeText->setText(chargeCount);
         }
         if (event.type == sf::Event::Resized) {
             // Update the mainView to the new size of the mainWindow
             mainView.setSize(event.size.width, event.size.height);
             mainWindow.setView(mainView);
-            gui.setView(mainView);
+            guiView.setSize(event.size.width, event.size.height);
+            gui.setView(guiView);
         }
         if (event.type == sf::Event::KeyPressed) {
             handleKeyboardEvent(event.key.code, true);
-            chargeCount = "Charges: " +
-                                  std::to_string(chargeVector.size()); chargeText->setText(chargeCount);
+            chargeCount = "Charges: " + std::to_string(chargeVector.size());
+            chargeText->setText(chargeCount);
         }
-
+        if (event.type == sf::Event::MouseWheelScrolled) {
+            if (event.mouseWheelScroll.delta > 0)
+                zoomMainViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, (1.f / zoomAmount));
+            else if (event.mouseWheelScroll.delta < 0)
+                zoomMainViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, zoomAmount);
+        }
     }
 }
 void Simulation::handleKeyboardEvent(sf::Keyboard::Key key, bool isPressed)
@@ -184,18 +206,36 @@ void Simulation::processRealTimeInput()
         }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y)) {
-      chargeCreatorTool.chargeMass += 0.1f;
+        chargeCreatorTool.chargeMass += 0.1f;
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(1)
+           << chargeCreatorTool.chargeMass;
+        massText->setText("Mass=" + ss.str());
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
-      chargeCreatorTool.chargeMass -= 0.1f;
-      if (chargeCreatorTool.chargeMass < 1.f) chargeCreatorTool.chargeMass = 1.f;
+        chargeCreatorTool.chargeMass -= 0.1f;
+        if (chargeCreatorTool.chargeMass < 1.f)
+            chargeCreatorTool.chargeMass = 1.f;
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(1)
+           << chargeCreatorTool.chargeMass;
+        massText->setText("Mass=" + ss.str());
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) {
-      chargeCreatorTool.chargeRadius += 0.1f;
+        chargeCreatorTool.chargeRadius += 0.1f;
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(1)
+           << chargeCreatorTool.chargeRadius;
+        radiusText->setText("Radius=" + ss.str());
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
-      chargeCreatorTool.chargeRadius -= 0.1f;
-      if (chargeCreatorTool.chargeRadius < 1.f) chargeCreatorTool.chargeRadius = 1.f;
+        chargeCreatorTool.chargeRadius -= 0.1f;
+        if (chargeCreatorTool.chargeRadius < 1.f)
+            chargeCreatorTool.chargeRadius = 1.f;
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(1)
+           << chargeCreatorTool.chargeRadius;
+        radiusText->setText("Radius=" + ss.str());
     }
     /*else {
         if (followCharge != nullptr) {
@@ -291,6 +331,17 @@ void Simulation::render()
     // Draw Gui
     gui.draw();
     mainWindow.display();
+}
+void Simulation::zoomMainViewAt(sf::Vector2i pixel, float zoom)
+{
+    const sf::Vector2f beforeCoord{mainWindow.mapPixelToCoords(pixel)};
+    mainView.zoom(zoom);
+    mainWindow.setView(mainView);
+    const sf::Vector2f afterCoord{mainWindow.mapPixelToCoords(pixel)};
+    const sf::Vector2f offsetCoords{beforeCoord - afterCoord};
+    mainView.move(offsetCoords);
+    mainWindow.setView(mainView);
+    viewSpeed *= zoom;
 }
 
 bool detectChargeWallCollision(const Charge& charge, const Wall& wall)
