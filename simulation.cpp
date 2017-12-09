@@ -2,8 +2,7 @@
 
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
-      mainView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)),
-      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow)
+      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow), bWidth(1024), bHeight(1024)
 
 {
     lockView = false;
@@ -13,6 +12,8 @@ Simulation::Simulation()
     currentTool = charge;
     // Text
     chargeCount = "Charges: 0";
+    //
+    mainView = sf::View(sf::Vector2f(bWidth/2, bHeight/2), sf::Vector2f(bWidth, bHeight));
 }
 void Simulation::loadWidgets()
 {
@@ -299,11 +300,19 @@ void Simulation::update()
             }
         }
     }
+    //Boundaries
     // Velocity
     // Position
     for (auto charge : chargeVector) {
         charge->incrementVelocity(dt * charge->getForce() / charge->getMass());
         charge->setPosition(charge->getPosition() + charge->getVelocity() * dt);
+        //Boundary
+        float cx = charge->getPosition().x;
+        float cy = charge->getPosition().y;
+        float cvx = charge->getVelocity().x;
+        float cvy = charge->getVelocity().y;
+        if ((cx < 0 && cvx < 0) || (cx > bWidth && cvx > 0)) charge->setVelocity({-cvx,cvy});
+        if ((cy < 0 && cvy < 0) || (cy > bHeight && cvy > 0)) charge->setVelocity({cvx,-cvy});
     }
 
     // WHERE  ELSE TO PUT THIS?
