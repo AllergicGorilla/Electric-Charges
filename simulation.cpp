@@ -17,12 +17,43 @@ void Simulation::loadWidgets()
   auto width = tgui::bindWidth(gui);
   auto height = tgui::bindHeight(gui);
   // GUI
-  textBox = tgui::TextBox::create();
-  textBox->setText(chargeCount);
-  textBox->setSize(sf::Vector2f(120,20));
-  textBox->setPosition(-width*0.5f , -height*0.5f);
-  textBox->setReadOnly(true);
-  gui.add(textBox);
+  //Text
+  chargeText = tgui::Label::create();
+  chargeText->setTextColor(sf::Color::White);
+  chargeText->setText(chargeCount);
+  chargeText->setSize(sf::Vector2f(120,30));
+  chargeText->setPosition(-width*0.5f , -height*0.5f);
+  gui.add(chargeText);
+  //Horizontal layout for Toolbar
+  h_Layout = tgui::HorizontalLayout::create();
+  h_Layout->setSize(sf::Vector2f(500,20));
+  h_Layout->setPosition(-width*0.125f , height*0.45f);
+  gui.add(h_Layout);
+  //Tool buttons
+  forceToolButton = tgui::Button::create("Force (F)");
+  forceToolButton->setSize(sf::Vector2f(120,20));
+  forceToolButton->connect("pressed", [&](){ currentTool = force; });
+  h_Layout->add(forceToolButton);
+
+  chargeCreatorToolButton = tgui::Button::create("Charge (C)");
+  chargeCreatorToolButton->setSize(sf::Vector2f(120,20));
+  chargeCreatorToolButton->connect("pressed", [&](){ currentTool = charge; });
+  h_Layout->add(chargeCreatorToolButton);
+
+  selectionToolButton = tgui::Button::create("Selection (S)");
+  selectionToolButton->setSize(sf::Vector2f(120,20));
+  selectionToolButton->connect("pressed", [&](){ currentTool = select; });
+  h_Layout->add(selectionToolButton);
+
+  followToolButton = tgui::Button::create("Follow (G)");
+  followToolButton->setSize(sf::Vector2f(120,20));
+  followToolButton->connect("pressed", [&](){ currentTool = follow; });
+  h_Layout->add(followToolButton);
+
+  placeWallToolButton = tgui::Button::create("Wall (P)");
+  placeWallToolButton->setSize(sf::Vector2f(120,20));
+  placeWallToolButton->connect("pressed", [&](){ currentTool = placeWall; });
+  h_Layout->add(placeWallToolButton);
 
 }
 void Simulation::run()
@@ -50,15 +81,16 @@ void Simulation::processEvents()
 {
     sf::Event event;
     while (mainWindow.pollEvent(event)) {
+        bool guiHandledEvent = gui.handleEvent(event);
         if (event.type == sf::Event::Closed)
             mainWindow.close();
-        if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.type == sf::Event::MouseButtonPressed && !guiHandledEvent) {
             handleMouseEvent(event.mouseButton.button, true);
         }
-        if (event.type == sf::Event::MouseButtonReleased) {
+        if (event.type == sf::Event::MouseButtonReleased && !guiHandledEvent) {
             handleMouseEvent(event.mouseButton.button, false);
             chargeCount = "Charges: " +
-                                  std::to_string(chargeVector.size()); textBox->setText(chargeCount);
+                                  std::to_string(chargeVector.size()); chargeText->setText(chargeCount);
         }
         if (event.type == sf::Event::Resized) {
             // Update the mainView to the new size of the mainWindow
@@ -69,9 +101,9 @@ void Simulation::processEvents()
         if (event.type == sf::Event::KeyPressed) {
             handleKeyboardEvent(event.key.code, true);
             chargeCount = "Charges: " +
-                                  std::to_string(chargeVector.size()); textBox->setText(chargeCount);
+                                  std::to_string(chargeVector.size()); chargeText->setText(chargeCount);
         }
-        gui.handleEvent(event);
+
     }
 }
 void Simulation::handleKeyboardEvent(sf::Keyboard::Key key, bool isPressed)

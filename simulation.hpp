@@ -47,7 +47,13 @@ class Simulation
     float dt;
     //GUI
     tgui::Gui gui;
-    tgui::TextBox::Ptr textBox;
+    tgui::Label::Ptr chargeText;
+    tgui::HorizontalLayout::Ptr h_Layout;
+    tgui::Button::Ptr forceToolButton;
+    tgui::Button::Ptr chargeCreatorToolButton;
+    tgui::Button::Ptr selectionToolButton;
+    tgui::Button::Ptr followToolButton;
+    tgui::Button::Ptr placeWallToolButton;
 
 
   public:
