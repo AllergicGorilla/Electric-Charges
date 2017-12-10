@@ -1,6 +1,7 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
+#include "grid.hpp"
 #include "charge.hpp"
 #include "tools.hpp"
 #include "vectorUtilities.hpp"
@@ -64,6 +65,8 @@ class Simulation
     tgui::Button::Ptr selectionToolButton;
     tgui::Button::Ptr followToolButton;
     tgui::Button::Ptr placeWallToolButton;
+    //
+    Grid grid;
 
 
   public:

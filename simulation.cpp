@@ -2,18 +2,19 @@
 
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
-      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow), bWidth(1024), bHeight(1024)
+      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow), bWidth(1024), bHeight(1024), grid(16.0f, 64+1, 64+1)
 
 {
     lockView = false;
     viewSpeed = 0.8f;
     zoomAmount = 1.05f;
-    dt = 0.01667f;
+    dt = 1.0f/60.0f;
     currentTool = charge;
     // Text
     chargeCount = "Charges: 0";
     //
     mainView = sf::View(sf::Vector2f(bWidth/2, bHeight/2), sf::Vector2f(bWidth, bHeight));
+    //
 }
 void Simulation::loadWidgets()
 {
@@ -339,6 +340,8 @@ void Simulation::render()
     selectionTool.draw(mainWindow);
     // Draw Gui
     gui.draw();
+    //
+    grid.draw(mainWindow);
     mainWindow.display();
 }
 void Simulation::zoomMainViewAt(sf::Vector2i pixel, float zoom)
