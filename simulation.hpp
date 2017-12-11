@@ -1,16 +1,16 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
-#include "grid.hpp"
 #include "charge.hpp"
+#include "grid.hpp"
 #include "tools.hpp"
 #include "vectorUtilities.hpp"
 #include <TGUI/TGUI.hpp>
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 #include <list>
 #include <memory>
-#include <iomanip>
 #include <sstream>
 
 class Simulation
@@ -26,7 +26,7 @@ class Simulation
     void zoomMainViewAt(sf::Vector2i pixel, float zoom);
 
   private:
-    //Tools
+    // Tools
     enum tool { force, charge, follow, select, placeWall };
     tool currentTool;
     ForceTool forceTool;
@@ -34,7 +34,7 @@ class Simulation
     SelectionTool selectionTool;
     FollowTool followTool;
     PlaceWallTool placeWallTool;
-    //Window & view
+    // Window & view
     sf::Vector2f mainMousePos;
     sf::RenderWindow mainWindow;
     sf::View mainView;
@@ -42,19 +42,19 @@ class Simulation
     bool lockView;
     float viewSpeed;
     float zoomAmount;
-    //Text
+    // Text
     sf::Font courierPrime;
     sf::String chargeCount;
-    //Objects
+    // Objects
     std::vector<std::shared_ptr<Charge>> chargeVector;
     std::vector<std::shared_ptr<Wall>> wallVector;
-    //Boundary
+    // Boundary
     float bWidth;
     float bHeight;
-    //Time
+    // Time
     sf::Clock mainClock;
     float dt;
-    //GUI
+    // GUI
     tgui::Gui gui;
     tgui::Label::Ptr chargeText;
     tgui::Label::Ptr radiusText;
@@ -65,9 +65,10 @@ class Simulation
     tgui::Button::Ptr selectionToolButton;
     tgui::Button::Ptr followToolButton;
     tgui::Button::Ptr placeWallToolButton;
+    tgui::Button::Ptr showGridButton;
     //
     Grid grid;
-
+    bool showGrid;
 
   public:
     Simulation();

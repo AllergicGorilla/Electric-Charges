@@ -2,19 +2,22 @@
 
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
-      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow), bWidth(1024), bHeight(1024), grid(16.0f, 64+1, 64+1)
+      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow),
+      bWidth(1024), bHeight(1024), grid(16.0f, 64, 64)
 
 {
     lockView = false;
     viewSpeed = 0.8f;
     zoomAmount = 1.05f;
-    dt = 1.0f/60.0f;
+    dt = 1.0f / 60.0f;
     currentTool = charge;
     // Text
     chargeCount = "Charges: 0";
     //
-    mainView = sf::View(sf::Vector2f(bWidth/2, bHeight/2), sf::Vector2f(bWidth, bHeight));
-    //
+    mainView = sf::View(sf::Vector2f(bWidth / 2, bHeight / 2),
+                        sf::Vector2f(bWidth, bHeight));
+    // Grid
+    showGrid = false;
 }
 void Simulation::loadWidgets()
 {
@@ -73,6 +76,11 @@ void Simulation::loadWidgets()
     placeWallToolButton->setSize(sf::Vector2f(120, 20));
     placeWallToolButton->connect("pressed", [&]() { currentTool = placeWall; });
     h_Layout->add(placeWallToolButton);
+
+    showGridButton = tgui::Button::create("Show grid");
+    showGridButton->setSize(sf::Vector2f(120, 20));
+    showGridButton->connect("pressed", [&]() { showGrid = !showGrid; });
+    h_Layout->add(showGridButton);
 }
 void Simulation::run()
 {
@@ -124,9 +132,13 @@ void Simulation::processEvents()
         }
         if (event.type == sf::Event::MouseWheelScrolled) {
             if (event.mouseWheelScroll.delta > 0)
-                zoomMainViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, (1.f / zoomAmount));
+                zoomMainViewAt(
+                    {event.mouseWheelScroll.x, event.mouseWheelScroll.y},
+                    (1.f / zoomAmount));
             else if (event.mouseWheelScroll.delta < 0)
-                zoomMainViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, zoomAmount);
+                zoomMainViewAt(
+                    {event.mouseWheelScroll.x, event.mouseWheelScroll.y},
+                    zoomAmount);
         }
     }
 }
@@ -301,21 +313,25 @@ void Simulation::update()
             }
         }
     }
-    //Boundaries
+    // Boundaries
     // Velocity
     // Position
     for (auto charge : chargeVector) {
         charge->incrementVelocity(dt * charge->getForce() / charge->getMass());
         charge->setPosition(charge->getPosition() + charge->getVelocity() * dt);
-        //Boundary
+        // Boundary
         float cx = charge->getPosition().x;
         float cy = charge->getPosition().y;
         float cvx = charge->getVelocity().x;
         float cvy = charge->getVelocity().y;
-        if ((cx < 0 && cvx < 0) || (cx > bWidth && cvx > 0)) charge->setVelocity({-cvx,cvy});
-        if ((cy < 0 && cvy < 0) || (cy > bHeight && cvy > 0)) charge->setVelocity({cvx,-cvy});
+        if ((cx < 0 && cvx < 0) || (cx > bWidth && cvx > 0))
+            charge->setVelocity({-cvx, cvy});
+        if ((cy < 0 && cvy < 0) || (cy > bHeight && cvy > 0))
+            charge->setVelocity({cvx, -cvy});
     }
-
+    // Grid
+    if (showGrid)
+        grid.updateHighlightPosition(mainMousePos);
     // WHERE  ELSE TO PUT THIS?
     if (lockView) {
         followTool.focusViewOnCharge(mainView);
@@ -340,8 +356,9 @@ void Simulation::render()
     selectionTool.draw(mainWindow);
     // Draw Gui
     gui.draw();
-    //
-    grid.draw(mainWindow);
+    // Draw Grid
+    if (showGrid)
+        grid.draw(mainWindow);
     mainWindow.display();
 }
 void Simulation::zoomMainViewAt(sf::Vector2i pixel, float zoom)
