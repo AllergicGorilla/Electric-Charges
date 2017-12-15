@@ -5,6 +5,7 @@
 #include "grid.hpp"
 #include "tools.hpp"
 #include "vectorUtilities.hpp"
+#include "electricField.hpp"
 #include <TGUI/TGUI.hpp>
 #include <cmath>
 #include <iomanip>
@@ -69,6 +70,8 @@ class Simulation
     //
     Grid grid;
     bool showGrid;
+    //e field
+    ElectricField electricField;
 
   public:
     Simulation();

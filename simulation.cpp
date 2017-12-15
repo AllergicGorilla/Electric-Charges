@@ -3,7 +3,7 @@
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
       guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow),
-      bWidth(1024), bHeight(1024), grid(16.0f, 64, 64)
+      bWidth(1024), bHeight(1024), grid(16.0f, 64, 64), electricField(64,64,16.0f, [&](const sf::Vector2f& pos) { return sf::Vector2f(pos.y-512, -pos.x+512); })
 
 {
     lockView = false;
@@ -359,6 +359,8 @@ void Simulation::render()
     // Draw Grid
     if (showGrid)
         grid.draw(mainWindow);
+    // Draw Electric field
+    electricField.draw(mainWindow);
     mainWindow.display();
 }
 void Simulation::zoomMainViewAt(sf::Vector2i pixel, float zoom)
