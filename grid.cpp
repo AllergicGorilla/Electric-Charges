@@ -6,18 +6,18 @@ void Grid::draw(sf::RenderWindow& window)
     if (showHighlight)
         window.draw(highlightSqr);
 }
-sf::Vector2i Grid::mapWorldToGridCoordinates(sf::Vector2f worldCoords)
+sf::Vector2i Grid::mapWorldToGridCoordinates(const sf::Vector2f& worldCoords)
 {
     // worldCoords must be within the grid's bounds!
     return sf::Vector2i(static_cast<int>(std::floor(worldCoords.x / cellSize)),
                         static_cast<int>(std::floor(worldCoords.y / cellSize)));
 }
-bool Grid::isWithinGrid(sf::Vector2f v)
+bool Grid::isWithinGrid(const sf::Vector2f& v)
 {
     return (v.x >= 0.0f && v.x <= (columns * cellSize) && v.y >= 0.0f &&
             v.y <= (rows * cellSize));
 }
-void Grid::updateHighlightPosition(sf::Vector2f pos)
+void Grid::updateHighlightPosition(const sf::Vector2f& pos)
 {
     if (isWithinGrid(pos)) {
         highlightSqr.setPosition(

@@ -1,7 +1,5 @@
 #include "charge.hpp"
 
-uint32_t Charge::global_id = 0;
-
 float Charge::getCharge() const { return charge; }
 float Charge::getMass() const { return mass; }
 

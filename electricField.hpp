@@ -1,6 +1,7 @@
 #ifndef ELECTRICFIELD_H
 #define ELECTRICFIELD_H
 #include "line.hpp"
+#include "charge.hpp"
 #include <SFML/Graphics.hpp>
 #include <functional>
 class ElectricField
@@ -10,6 +11,8 @@ class ElectricField
     float unitLength;
     int width;
     int height;
+    sf::Vector2i mapWorldToFieldCoordinates(const sf::Vector2f& worldCoords);
+    bool isWithinField(const sf::Vector2f& v);
 
   public:
     ElectricField(int width, int height, float unitLength,
@@ -26,17 +29,7 @@ class ElectricField
             }
         }
     }
-    void draw(sf::RenderWindow& window)
-    {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                sf::Vector2f base =
-                    unitLength * sf::Vector2f(x + 0.5f, y + 0.5f);
-                Line line =
-                    Line(base, base + 0.01f * vectorField[x][y], sf::Color::Red);
-                window.draw(line.getVertexArray());
-            }
-        }
-    }
+    void draw(sf::RenderWindow& window);
+    void applyForceOnCharge(Charge& charge);
 };
 #endif

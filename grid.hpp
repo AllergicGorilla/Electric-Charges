@@ -55,7 +55,7 @@ class Grid
     int rows;
 
   private:
-    bool isWithinGrid(sf::Vector2f v);
+    bool isWithinGrid(const sf::Vector2f& v);
 
   public:
     Grid(float cellSize, int columns, int rows)
@@ -80,8 +80,8 @@ class Grid
         //
         showHighlight = true;
     }
-    void updateHighlightPosition(sf::Vector2f pos);
+    void updateHighlightPosition(const sf::Vector2f& pos);
     void draw(sf::RenderWindow& window);
-    sf::Vector2i mapWorldToGridCoordinates(sf::Vector2f worldCoords);
+    sf::Vector2i mapWorldToGridCoordinates(const sf::Vector2f& worldCoords);
 };
 #endif

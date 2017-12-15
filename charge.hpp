@@ -6,7 +6,6 @@
 class Charge : public sf::CircleShape
 {
   private:
-    static uint32_t global_id;
     float charge;
     float mass;
     bool isCursorOn = false;
@@ -18,12 +17,11 @@ class Charge : public sf::CircleShape
     Charge(float radius = 0, std::size_t pointCount = 30, float charge = 0.f,
            float mass = 1.f, sf::Vector2f velocity = sf::Vector2f(0.f, 0.f))
         : CircleShape(radius, pointCount), charge(charge), velocity(velocity),
-          mass(mass), id(global_id++), force(sf::Vector2f(0.f, 0.f))
+          mass(mass), force(sf::Vector2f(0.f, 0.f))
     {
       this->setOutlineColor(sf::Color::Transparent);
       this->setOutlineThickness(2.f);
     }
-    const uint32_t id;
 
     float getCharge() const;
 

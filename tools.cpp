@@ -63,7 +63,7 @@ void ChargeCreatorTool::usePrimary(
     } else {
         primaryButtonReleased = true;
         sf::Vector2f chargeVelocity = currentPos - initialPos;
-        Charge newCharge(chargeRadius, 30, 0.f, chargeMass, chargeVelocity);
+        Charge newCharge(chargeRadius, 30, 1.f, chargeMass, chargeVelocity);
         newCharge.setOrigin(chargeRadius, chargeRadius);
         newCharge.setPosition(initialPos);
         std::cout << newCharge.id << std::endl;
@@ -91,7 +91,8 @@ void FollowTool::usePrimary(
             if (chargePtr->getIsCursorOn()) {
                 followCharge = chargePtr;
                 break;
-            } else followCharge=nullptr;
+            } else
+                followCharge = nullptr;
         }
     }
 }
@@ -192,20 +193,18 @@ void SelectionTool::draw(sf::RenderWindow& window) const
         window.draw(selectionRectangle);
     }
 }
-void PlaceWallTool::usePrimary(bool isPressed, std::vector<std::shared_ptr<Wall>>& wallVector,
-                sf::Vector2f mousePos)
+void PlaceWallTool::usePrimary(bool isPressed,
+                               std::vector<std::shared_ptr<Wall>>& wallVector,
+                               sf::Vector2f mousePos)
 {
-  if (isPressed) {
-      primaryButtonReleased = false;
-      initialPos = mousePos;
-      wallLine.setVertexPosition(initialPos, 0);
-  } else {
-      primaryButtonReleased = true;
-      Wall newWall(initialPos, currentPos);
-      wallVector.push_back(std::make_shared<Wall>(newWall));
-  }
+    if (isPressed) {
+        primaryButtonReleased = false;
+        initialPos = mousePos;
+        wallLine.setVertexPosition(initialPos, 0);
+    } else {
+        primaryButtonReleased = true;
+        Wall newWall(initialPos, currentPos);
+        wallVector.push_back(std::make_shared<Wall>(newWall));
+    }
 }
-void PlaceWallTool::setCurrentPos(sf::Vector2f pos)
-{
-  currentPos = pos;
-}
+void PlaceWallTool::setCurrentPos(sf::Vector2f pos) { currentPos = pos; }
