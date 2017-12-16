@@ -66,7 +66,6 @@ void ChargeCreatorTool::usePrimary(
         Charge newCharge(chargeRadius, 30, 1.f, chargeMass, chargeVelocity);
         newCharge.setOrigin(chargeRadius, chargeRadius);
         newCharge.setPosition(initialPos);
-        std::cout << newCharge.id << std::endl;
         chargeVector.push_back(std::make_shared<Charge>(newCharge));
     }
 }
