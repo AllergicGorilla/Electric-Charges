@@ -6,7 +6,7 @@ void ElectricField::draw(sf::RenderWindow& window)
             sf::Vector2f base = unitLength * sf::Vector2f(x + 0.5f, y + 0.5f);
             Line line =
                 Line(base, base + 1.f * vectorField[x][y], sf::Color::Red);
-            window.draw(line.getVertexArray());
+            window.draw(line);
         }
     }
 }

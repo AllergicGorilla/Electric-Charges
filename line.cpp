@@ -20,12 +20,12 @@ sf::Vector2f Line::asVector() const
 }
 const sf::VertexArray& Line::getVertexArray() const { return vArray; }
 sf::Vector2f Line::getCenter() const { return (vArray[1].position + vArray[0].position) / 2.f; }
-void Line::translate(sf::Vector2f dx)
-{
-    vArray[0].position += dx;
-    vArray[1].position += dx;
-}
 sf::Vector2f Line::normal() const
 {
   return VectorUtilities::normal(VectorUtilities::unit(this->asVector()));
+}
+void Line::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+  states.transform *= getTransform();
+  target.draw(vArray, states);
 }

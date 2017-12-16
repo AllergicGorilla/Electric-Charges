@@ -47,7 +47,7 @@ void ForceTool::updateInitialPos()
 void ForceTool::draw(sf::RenderWindow& window) const
 {
     if (!primaryButtonReleased) {
-        window.draw(forceLine.getVertexArray());
+        window.draw(forceLine);
     }
 }
 
@@ -72,7 +72,7 @@ void ChargeCreatorTool::usePrimary(
 void ChargeCreatorTool::draw(sf::RenderWindow& window) const
 {
     if (!primaryButtonReleased) {
-        window.draw(velocityLine.getVertexArray());
+        window.draw(velocityLine);
     }
 }
 void ChargeCreatorTool::setCurrentPos(sf::Vector2f pos)

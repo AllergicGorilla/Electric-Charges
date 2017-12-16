@@ -354,11 +354,11 @@ void Simulation::render()
     for (auto s : chargeVector) {
         mainWindow.draw(*s);
         if (s->getIsCursorOn()) {
-            mainWindow.draw(s->velocityLine().getVertexArray());
+            mainWindow.draw(s->velocityLine());
         }
     }
     for (auto wall : wallVector) {
-        mainWindow.draw(wall->getVertexArray());
+        mainWindow.draw(*wall);
     }
     forceTool.draw(mainWindow);
     chargeCreatorTool.draw(mainWindow);
