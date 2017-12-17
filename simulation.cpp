@@ -276,49 +276,49 @@ void Simulation::update()
     using chargePtrIter = std::vector<std::shared_ptr<Charge>>::const_iterator;
     using wallPtrIter = std::vector<std::shared_ptr<Wall>>::const_iterator;
     for (chargePtrIter s = chargeVector.begin(); s != chargeVector.end(); s++) {
+        Charge& sCharge = *(*s);
         // Electric field
-
-        electricField.applyForceOnCharge(*(*s));
+        electricField.applyForceOnCharge(sCharge);
         //
-        sf::Vector2f sPos = (*s)->getPosition();
-        (*s)->setIsCursorOn(distance(sPos, mainMousePos) < (*s)->getRadius());
-        if ((*s)->getIsCursorOn())
-            (*s)->setFillColor(sf::Color::Red);
+        sf::Vector2f sPos = sCharge.getPosition();
+        sCharge.setIsCursorOn(distance(sPos, mainMousePos) < sCharge.getRadius());
+        if (sCharge.getIsCursorOn())
+            sCharge.setFillColor(sf::Color::Red);
         else
-            (*s)->setFillColor(sf::Color::White);
+            sCharge.setFillColor(sf::Color::White);
 
         // Circle-Circle Collision
         for (chargePtrIter r = s + 1; r != chargeVector.end(); r++) {
-            if (detectChargeChargeCollision(*(*r), *(*s), dt)) {
+            Charge& rCharge = *(*r);
+            if (detectChargeChargeCollision(rCharge, sCharge, dt)) {
                 std::cout << "COLLISION" << std::endl;
                 sf::Vector2f velDiff =
-                    (*r)->getVelocity() - (*s)->getVelocity();
+                    rCharge.getVelocity() - sCharge.getVelocity();
                 sf::Vector2f normal =
-                    unit((*s)->getPosition() -
-                         (*r)->getPosition()); // Points from (*r) to (*s)
-                float reducedMass = ((*r)->getMass() * (*s)->getMass()) /
-                                    ((*r)->getMass() + (*s)->getMass());
+                    unit(sCharge.getPosition() -
+                         rCharge.getPosition()); // Points from (*r) to (*s)
+                float reducedMass = (rCharge.getMass() * sCharge.getMass()) /
+                                    (rCharge.getMass() + sCharge.getMass());
                 sf::Vector2f J =
                     2 * reducedMass * dotProduct(velDiff, normal) * normal;
                 (*r)->incrementForce(-J / dt);
-                (*s)->incrementForce(J / dt);
+                sCharge.incrementForce(J / dt);
             }
         }
         // Circle-Wall collision
         for (wallPtrIter wIter = wallVector.begin(); wIter != wallVector.end();
              wIter++) {
             Wall& wall = *(*wIter);
-            Charge& charge = *(*s);
-            if (detectChargeWallCollision(charge, wall)) {
+            if (detectChargeWallCollision(sCharge, wall)) {
                 sf::Vector2f velocityParallel =
-                    dotProduct(charge.getVelocity(), unit(wall.asVector())) *
+                    dotProduct(sCharge.getVelocity(), unit(wall.asVector())) *
                     unit(wall.asVector());
                 sf::Vector2f velocityPerpendicular =
-                    dotProduct(charge.getVelocity(), wall.normal()) *
+                    dotProduct(sCharge.getVelocity(), wall.normal()) *
                     wall.normal();
                 sf::Vector2f newVelocity =
                     velocityParallel - velocityPerpendicular;
-                charge.setVelocity(newVelocity);
+                sCharge.setVelocity(newVelocity);
             }
         }
     }
