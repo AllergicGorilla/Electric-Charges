@@ -73,6 +73,8 @@ class Simulation
     bool showGrid;
     //e field
     ElectricField electricField;
+    //Shaders
+    sf::Shader chargeHighlightShader;
 
   public:
     Simulation();

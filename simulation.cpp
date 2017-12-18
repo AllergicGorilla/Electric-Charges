@@ -21,6 +21,14 @@ Simulation::Simulation()
                         sf::Vector2f(bWidth, bHeight));
     // Grid
     showGrid = false;
+    // Shaders
+    if (chargeHighlightShader.loadFromFile("chargeHighlightShader.frag",
+                                           sf::Shader::Fragment)) {
+        // chargeHighlightShader.setUniform("texture",
+        // sf::Shader::CurrentTexture);
+    } else {
+        std::cout << "chargeHighlightShader could not be loaded!" << std::endl;
+    }
 }
 void Simulation::loadWidgets()
 {
@@ -102,8 +110,6 @@ void Simulation::run()
         accumulator += frameTime.asSeconds();
         mainMousePos =
             mainWindow.mapPixelToCoords(sf::Mouse::getPosition(mainWindow));
-        std::cout << "(" << mainMousePos.x << ", " << mainMousePos.y << ")"
-                  << std::endl;
         processEvents();
         processRealTimeInput();
         while (accumulator >= dt) {
@@ -302,11 +308,8 @@ void Simulation::update()
         electricField.applyForceOnCharge(sCharge);
         //
         sf::Vector2f sPos = sCharge.getPosition();
-        sCharge.setIsCursorOn(distance(sPos, mainMousePos) < sCharge.getRadius());
-        if (sCharge.getIsCursorOn())
-            sCharge.setFillColor(sf::Color::Red);
-        else
-            sCharge.setFillColor(sf::Color::White);
+        sCharge.setIsCursorOn(distance(sPos, mainMousePos) <
+                              sCharge.getRadius());
 
         // Circle-Circle Collision
         for (chargePtrIter r = s + 1; r != chargeVector.end(); r++) {
@@ -371,12 +374,22 @@ void Simulation::update()
 void Simulation::render()
 {
     mainWindow.clear();
+    // Draw Grid
+    if (showGrid) {
+        grid.draw(mainWindow);
+        // Draw Electric field
+        electricField.draw(mainWindow);
+    }
     // Draw charges
     for (auto s : chargeVector) {
-        mainWindow.draw(*s);
         if (s->getIsCursorOn()) {
-            mainWindow.draw(s->velocityLine());
-        }
+            // Draw charge
+            mainWindow.draw(*s, &chargeHighlightShader);
+            // Draw velocity line
+            mainWindow.draw(
+                s->velocityLine());
+        } else
+            mainWindow.draw(*s);
     }
     for (auto wall : wallVector) {
         mainWindow.draw(*wall);
@@ -386,12 +399,7 @@ void Simulation::render()
     selectionTool.draw(mainWindow);
     // Draw Gui
     gui.draw();
-    // Draw Grid
-    if (showGrid) {
-        grid.draw(mainWindow);
-        // Draw Electric field
-        electricField.draw(mainWindow);
-    }
+
     mainWindow.display();
 }
 void Simulation::zoomMainViewAt(sf::Vector2i pixel, float zoom)
