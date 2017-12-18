@@ -57,9 +57,10 @@ class Simulation
     float dt;
     // GUI
     tgui::Gui gui;
-    tgui::Label::Ptr chargeText;
+    tgui::Label::Ptr chargeCountText;
     tgui::Label::Ptr radiusText;
     tgui::Label::Ptr massText;
+    tgui::Label::Ptr chargeText;
     tgui::HorizontalLayout::Ptr h_Layout;
     tgui::Button::Ptr forceToolButton;
     tgui::Button::Ptr chargeCreatorToolButton;

@@ -53,6 +53,7 @@ class ChargeCreatorTool : public Tool
     {
         chargeMass = 1.f;
         chargeRadius = 1.f;
+        electricCharge = 1.f;
     }
     void usePrimary(bool isPressed,
                     std::vector<std::shared_ptr<Charge>>& chargeVector,
@@ -61,6 +62,7 @@ class ChargeCreatorTool : public Tool
     void setCurrentPos(sf::Vector2f pos);
     float chargeMass;
     float chargeRadius;
+    float electricCharge;
 };
 class FollowTool
 {

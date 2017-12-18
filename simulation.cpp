@@ -28,12 +28,12 @@ void Simulation::loadWidgets()
     auto height = tgui::bindHeight(gui);
     // GUI
     // Text
-    chargeText = tgui::Label::create();
-    chargeText->setTextColor(sf::Color::White);
-    chargeText->setText(chargeCount);
-    chargeText->setSize(sf::Vector2f(120, 30));
-    chargeText->setPosition(-width * 0.5f, -height * 0.5f);
-    gui.add(chargeText);
+    chargeCountText = tgui::Label::create();
+    chargeCountText->setTextColor(sf::Color::White);
+    chargeCountText->setText(chargeCount);
+    chargeCountText->setSize(sf::Vector2f(120, 30));
+    chargeCountText->setPosition(-width * 0.5f, -height * 0.5f);
+    gui.add(chargeCountText);
 
     radiusText = tgui::Label::create();
     radiusText->setTextColor(sf::Color::White);
@@ -48,6 +48,13 @@ void Simulation::loadWidgets()
     massText->setSize(sf::Vector2f(120, 30));
     massText->setPosition(-width * 0.5f, -height * 0.4f);
     gui.add(massText);
+
+    chargeText = tgui::Label::create();
+    chargeText->setTextColor(sf::Color::White);
+    chargeText->setText("Charge=1.0");
+    chargeText->setSize(sf::Vector2f(120, 30));
+    chargeText->setPosition(-width * 0.5f, -height * 0.35f);
+    gui.add(chargeText);
     // Horizontal layout for Toolbar
     h_Layout = tgui::HorizontalLayout::create();
     h_Layout->setSize(sf::Vector2f(500, 20));
@@ -119,7 +126,7 @@ void Simulation::processEvents()
         if (event.type == sf::Event::MouseButtonReleased && !guiHandledEvent) {
             handleMouseEvent(event.mouseButton.button, false);
             chargeCount = "Charges: " + std::to_string(chargeVector.size());
-            chargeText->setText(chargeCount);
+            chargeCountText->setText(chargeCount);
         }
         if (event.type == sf::Event::Resized) {
             // Update the mainView to the new size of the mainWindow
@@ -131,7 +138,7 @@ void Simulation::processEvents()
         if (event.type == sf::Event::KeyPressed) {
             handleKeyboardEvent(event.key.code, true);
             chargeCount = "Charges: " + std::to_string(chargeVector.size());
-            chargeText->setText(chargeCount);
+            chargeCountText->setText(chargeCount);
         }
         if (event.type == sf::Event::MouseWheelScrolled) {
             if (event.mouseWheelScroll.delta > 0)
@@ -253,6 +260,20 @@ void Simulation::processRealTimeInput()
         ss << std::fixed << std::setprecision(1)
            << chargeCreatorTool.chargeRadius;
         radiusText->setText("Radius=" + ss.str());
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) {
+        chargeCreatorTool.electricCharge += 0.1f;
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(1)
+           << chargeCreatorTool.electricCharge;
+        chargeText->setText("Charge=" + ss.str());
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
+        chargeCreatorTool.electricCharge -= 0.1f;
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(1)
+           << chargeCreatorTool.electricCharge;
+        chargeText->setText("Charge=" + ss.str());
     }
     /*else {
         if (followCharge != nullptr) {

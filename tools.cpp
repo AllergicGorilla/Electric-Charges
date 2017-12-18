@@ -63,7 +63,7 @@ void ChargeCreatorTool::usePrimary(
     } else {
         primaryButtonReleased = true;
         sf::Vector2f chargeVelocity = currentPos - initialPos;
-        Charge newCharge(chargeRadius, 30, 1.f, chargeMass, chargeVelocity);
+        Charge newCharge(chargeRadius, 30, electricCharge, chargeMass, chargeVelocity);
         newCharge.setOrigin(chargeRadius, chargeRadius);
         newCharge.setPosition(initialPos);
         chargeVector.push_back(std::make_shared<Charge>(newCharge));
