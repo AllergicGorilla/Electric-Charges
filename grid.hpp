@@ -47,19 +47,19 @@ class MeshSquare : public sf::Drawable, public sf::Transformable
 class Grid
 {
   private:
+    int columns;
+    int rows;
+    float cellSize;
     sf::VertexArray vertexGrid;
     MeshSquare highlightSqr;
     bool showHighlight;
-    float cellSize;
-    int columns;
-    int rows;
 
   private:
     bool isWithinGrid(const sf::Vector2f& v);
 
   public:
     Grid(float cellSize, int columns, int rows)
-        : cellSize(cellSize), columns(columns), rows(rows),
+        : columns(columns), rows(rows),cellSize(cellSize),
           vertexGrid(sf::Lines), highlightSqr({0, 0}, cellSize)
     {
         // Set up vertexGrid

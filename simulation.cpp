@@ -2,8 +2,8 @@
 
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
-      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), gui(mainWindow),
-      bWidth(1024), bHeight(1024), grid(16.0f, 64, 64),
+      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), bWidth(1024), gui(mainWindow),
+      bHeight(1024), grid(16.0f, 64, 64),
       electricField(64, 64, 16.0f, [&](const sf::Vector2f& pos) {
           return sf::Vector2f(0.0f, 0.0f);
       })
@@ -169,6 +169,7 @@ void Simulation::handleKeyboardEvent(sf::Keyboard::Key key, bool isPressed)
     case sf::Keyboard::X: selectionTool.removeCharges(chargeVector); break;
     case sf::Keyboard::A: selectionTool.selectAll(chargeVector); break;
     case sf::Keyboard::P: currentTool = placeWall; break;
+    default: break;
     }
 }
 void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)
@@ -193,9 +194,12 @@ void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)
             break;
         case placeWall:
             placeWallTool.usePrimary(isPressed, wallVector, mainMousePos);
+        default: break;
         }
         break;
+
     }
+    default: break;
     }
 }
 
@@ -387,7 +391,7 @@ void Simulation::render()
             mainWindow.draw(*s, &chargeHighlightShader);
             // Draw velocity line
             mainWindow.draw(
-                s->velocityLine());
+                s->velocityLine(),sf::BlendMode(sf::BlendMode::OneMinusDstColor, sf::BlendMode::Zero, sf::BlendMode::Add));
         } else
             mainWindow.draw(*s);
     }
@@ -433,7 +437,7 @@ bool detectChargeWallCollision(const Charge& charge, const Wall& wall)
         discriminant = std::sqrt(discriminant);
         float t1 = (-b - discriminant) / (2 * a);
         float t2 = (-b + discriminant) / (2 * a);
-        if (t1 >= 0 && t1 <= 1)
+        if (t1 >= 0 && t2 <= 1)
             intersects = true;
     }
     return intersects && isComingAtWall;

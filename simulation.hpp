@@ -49,9 +49,6 @@ class Simulation
     // Objects
     std::vector<std::shared_ptr<Charge>> chargeVector;
     std::vector<std::shared_ptr<Wall>> wallVector;
-    // Boundary
-    float bWidth;
-    float bHeight;
     // Time
     sf::Clock mainClock;
     float dt;
@@ -68,6 +65,9 @@ class Simulation
     tgui::Button::Ptr followToolButton;
     tgui::Button::Ptr placeWallToolButton;
     tgui::Button::Ptr showGridButton;
+    // Boundary
+    float bWidth;
+    float bHeight;
     //
     Grid grid;
     bool showGrid;
