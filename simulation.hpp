@@ -6,6 +6,7 @@
 #include "tools.hpp"
 #include "vectorUtilities.hpp"
 #include "electricField.hpp"
+#include <SFML/OpenGL.hpp>
 #include <TGUI/TGUI.hpp>
 #include <cmath>
 #include <iomanip>
@@ -13,6 +14,7 @@
 #include <list>
 #include <memory>
 #include <sstream>
+#include <fstream>
 
 class Simulation
 {
@@ -43,6 +45,8 @@ class Simulation
     bool lockView;
     float viewSpeed;
     float zoomAmount;
+    sf::RenderTexture bgTexture;
+    sf::Sprite bgSprite;
     // Text
     sf::Font courierPrime;
     sf::String chargeCount;
@@ -75,6 +79,8 @@ class Simulation
     ElectricField electricField;
     //Shaders
     sf::Shader chargeHighlightShader;
+    sf::Shader equipotentialShader;
+    std::string equipotentialShaderCode;
 
   public:
     Simulation();

@@ -2,8 +2,8 @@
 
 Simulation::Simulation()
     : mainWindow(sf::VideoMode(1024, 1024), "Electric"),
-      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), bWidth(1024), gui(mainWindow),
-      bHeight(1024), grid(16.0f, 64, 64),
+      guiView(sf::Vector2f(0, 0), sf::Vector2f(800, 800)), bWidth(1024),
+      bHeight(1024), gui(mainWindow), grid(16.0f, 64, 64),
       electricField(64, 64, 16.0f, [&](const sf::Vector2f& pos) {
           return sf::Vector2f(0.0f, 0.0f);
       })
@@ -14,6 +14,15 @@ Simulation::Simulation()
     zoomAmount = 1.05f;
     dt = 1.0f / 60.0f;
     currentTool = charge;
+    // Background setup
+    sf::RectangleShape bgRect({bWidth, bHeight});
+    bgRect.setFillColor(sf::Color::White);
+    if (!bgTexture.create(bWidth, bHeight))
+        std::cout << "bgTexture could not be created!" << std::endl;
+    bgTexture.clear();
+    bgTexture.draw(bgRect);
+    bgTexture.display();
+    bgSprite = sf::Sprite(bgTexture.getTexture());
     // Text
     chargeCount = "Charges: 0";
     //
@@ -24,10 +33,23 @@ Simulation::Simulation()
     // Shaders
     if (chargeHighlightShader.loadFromFile("chargeHighlightShader.frag",
                                            sf::Shader::Fragment)) {
-        // chargeHighlightShader.setUniform("texture",
-        // sf::Shader::CurrentTexture);
     } else {
         std::cout << "chargeHighlightShader could not be loaded!" << std::endl;
+    }
+    //TODO: Organize the equipotential code
+    std::ifstream file("equipotentialShader.frag");
+    if (file.good()) {
+        equipotentialShaderCode =
+            std::string((std::istreambuf_iterator<char>(file)),
+                        (std::istreambuf_iterator<char>()));
+        file.close();
+        equipotentialShader.loadFromMemory("#define NUMBER_OF_CHARGES 1\n" +
+                                               equipotentialShaderCode,
+                                           sf::Shader::Fragment);
+        equipotentialShader.setUniform("u_resolution",
+                                       sf::Vector2f(bWidth, bHeight));
+    } else {
+        std::cout << "equipotentialShader could not be loaded!" << std::endl;
     }
 }
 void Simulation::loadWidgets()
@@ -180,9 +202,31 @@ void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)
         case force:
             forceTool.usePrimary(isPressed, chargeVector, mainMousePos);
             break;
-        case charge:
+        case charge: {
             chargeCreatorTool.usePrimary(isPressed, chargeVector, mainMousePos);
+            //TODO: Organize the equipotential code
+            int numberOfCharges = chargeVector.size();
+            if (numberOfCharges > 0) {
+                std::string recompiledEquipotentialShaderCode =
+                    "#define NUMBER_OF_CHARGES " +
+                    std::to_string(numberOfCharges) + "\n" +
+                    equipotentialShaderCode;
+                equipotentialShader.loadFromMemory(
+                    recompiledEquipotentialShaderCode, sf::Shader::Fragment);
+                equipotentialShader.setUniform("u_resolution",
+                                               sf::Vector2f(bWidth, bHeight));
+                std::vector<sf::Vector3f> pos_q_vector;
+                for (auto charge : chargeVector) {
+                    sf::Vector2f pos = charge->getPosition();
+                    pos = sf::Vector2f(pos.x, bHeight - pos.y);
+                    pos_q_vector.push_back(
+                        sf::Vector3f(pos.x, pos.y, charge->getCharge()));
+                }
+                equipotentialShader.setUniformArray(
+                    "chargeArray", &pos_q_vector[0], numberOfCharges);
+            }
             break;
+        }
         case follow:
             if (isPressed) {
                 followTool.usePrimary(isPressed, chargeVector, mainMousePos);
@@ -197,7 +241,6 @@ void Simulation::handleMouseEvent(sf::Mouse::Button button, bool isPressed)
         default: break;
         }
         break;
-
     }
     default: break;
     }
@@ -319,7 +362,6 @@ void Simulation::update()
         for (chargePtrIter r = s + 1; r != chargeVector.end(); r++) {
             Charge& rCharge = *(*r);
             if (detectChargeChargeCollision(rCharge, sCharge, dt)) {
-                std::cout << "COLLISION" << std::endl;
                 sf::Vector2f velDiff =
                     rCharge.getVelocity() - sCharge.getVelocity();
                 sf::Vector2f normal =
@@ -378,6 +420,20 @@ void Simulation::update()
 void Simulation::render()
 {
     mainWindow.clear();
+    // Draw equipotential lines
+    //TODO: Organize the equipotential code
+    if (chargeVector.size() != 0) {
+        std::vector<sf::Vector3f> pos_q_vector;
+        for (auto charge : chargeVector) {
+            sf::Vector2f pos = charge->getPosition();
+            pos = sf::Vector2f(pos.x, bHeight - pos.y);
+            pos_q_vector.push_back(
+                sf::Vector3f(pos.x, pos.y, charge->getCharge()));
+        }
+        equipotentialShader.setUniformArray(
+            "chargeArray", &pos_q_vector[0], chargeVector.size());
+        mainWindow.draw(bgSprite, &equipotentialShader);
+    }
     // Draw Grid
     if (showGrid) {
         grid.draw(mainWindow);
@@ -390,8 +446,10 @@ void Simulation::render()
             // Draw charge
             mainWindow.draw(*s, &chargeHighlightShader);
             // Draw velocity line
-            mainWindow.draw(
-                s->velocityLine(),sf::BlendMode(sf::BlendMode::OneMinusDstColor, sf::BlendMode::Zero, sf::BlendMode::Add));
+            mainWindow.draw(s->velocityLine(),
+                            sf::BlendMode(sf::BlendMode::OneMinusDstColor,
+                                          sf::BlendMode::Zero,
+                                          sf::BlendMode::Add));
         } else
             mainWindow.draw(*s);
     }

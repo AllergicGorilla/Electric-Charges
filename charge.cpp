@@ -9,7 +9,7 @@ void Charge::incrementVelocity(sf::Vector2f dv) { velocity += dv; }
 Line Charge::velocityLine() const
 {
     Line line(this->getPosition(), this->getPosition() + this->getVelocity());
-    line.setColor(sf::Color::Red);
+    line.setColor(sf::Color::White);
     return line;
 }
 
